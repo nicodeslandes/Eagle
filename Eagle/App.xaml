@@ -7,8 +7,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:vm="clr-namespace:Eagle.ViewModel" 
+    xmlns:cv="clr-namespace:Eagle.Common.Converters;assembly=Eagle.Common"
     mc:Ignorable="d">
-  <Application.Resources>
-    <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
-  </Application.Resources>
+    <Application.Resources>
+        <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
+        <cv:VisibilityConverter x:Key="VisibilityConverter" />
+    </Application.Resources>
 </Application>

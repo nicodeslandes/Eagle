@@ -52,6 +52,8 @@ namespace Eagle.ViewModel
 
         private string _fileName;
         private bool _followTail;
+        private bool _isFileOpen = false;
+
         public bool FollowTail
         {
             get
@@ -85,9 +87,27 @@ namespace Eagle.ViewModel
                     var old = _fileName;
                     _fileName = value;
                     this.RaisePropertyChanged("FileName", old, value, true);
+                    this.IsFileOpen = _fileName != null;
                 }
             }
         }
+
+        public bool IsFileOpen
+        {
+            get
+            {
+                return _isFileOpen;
+            }
+            set
+            {
+                if (_isFileOpen != value)
+                {
+                    _isFileOpen = value;
+                    this.RaisePropertyChanged("IsFileOpen", !_isFileOpen, value, true);
+                }
+            }
+        }
+
         public RelayCommand OpenCommand { get; private set; }
 
         public RelayCommand CloseCommand { get; private set; }
