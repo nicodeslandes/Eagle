@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
 using System;
+using System.Windows;
 
 namespace Eagle.ViewModel
 {
@@ -26,71 +27,22 @@ namespace Eagle.ViewModel
         /// </summary>
         public MainViewModel()
         {
-            this.Logs = new ObservableCollection<string>();
-
             this.OpenCommand = new RelayCommand(this.Open);
-            this.CloseCommand = new RelayCommand(this.Close, () => this.FileName != null);
-            this.RefreshCommand = new RelayCommand(this.Refresh, () => this.FileName != null);
+            this.CloseCommand = new RelayCommand(this.Close, () => this.File != null);
+            this.RefreshCommand = new RelayCommand(this.Refresh, () => this.File != null);
 
-            if (IsInDesignMode)
+            this.FollowTail = true;
+
+            if (this.IsInDesignMode)
             {
-                this.Logs.Add("Hello, World!");
-                this.Logs.Add("Hello, World!");
-                this.Logs.Add("Hello, World!");
-                this.Logs.Add("Hello, World!");
-                this.Logs.Add("Hello, World!");
-                this.FollowTail = true;
-                this.FileName = @"C:\Users\Nicolas\Desktop\Test.txt";
-            }
-            else
-            {
-                this.Logs.Add("Press Open to open a new file");
+                this.IsFileOpen = true;
+                this.File = new FileViewModel("Test File");
             }
         }
 
-        public ObservableCollection<string> Logs { get; private set; }
-
-        private string _fileName;
         private bool _followTail;
         private bool _isFileOpen = false;
-
-        public bool FollowTail
-        {
-            get
-            {
-                return _followTail;
-            }
-
-            set
-            {
-                if (_followTail != value)
-                {
-                    var old = _followTail;
-                    _followTail = value;
-                    this.RaisePropertyChanged("FollowTail", old, value, true);
-
-                    this.Logs.Add(string.Format("FollowTail changed to {0}", _followTail));
-                }
-            }
-        }
-
-        public string FileName
-        {
-            get
-            {
-                return _fileName;
-            }
-            set
-            {
-                if (_fileName != value)
-                {
-                    var old = _fileName;
-                    _fileName = value;
-                    this.RaisePropertyChanged("FileName", old, value, true);
-                    this.IsFileOpen = _fileName != null;
-                }
-            }
-        }
+        private FileViewModel _file;
 
         public bool IsFileOpen
         {
@@ -108,47 +60,67 @@ namespace Eagle.ViewModel
             }
         }
 
+        public FileViewModel File
+        {
+            get
+            {
+                return _file;
+            }
+            set
+            {
+                if (_file != value)
+                {
+                    _file = value;
+                    this.RaisePropertyChanged("File");
+                }
+            }
+        }
+
         public RelayCommand OpenCommand { get; private set; }
 
         public RelayCommand CloseCommand { get; private set; }
 
         public RelayCommand RefreshCommand { get; private set; }
 
+        public bool FollowTail
+        {
+            get
+            {
+                return _followTail;
+            }
+
+            set
+            {
+                if (_followTail != value)
+                {
+                    var old = _followTail;
+                    _followTail = value;
+                    this.RaisePropertyChanged("FollowTail", old, value, true);
+                }
+            }
+        }
+
         private void Open()
         {
             var dialog = new OpenFileDialog();
             if (dialog.ShowDialog() == true)
             {
-                this.FileName = dialog.FileName;
-                LoadFileContent(this.FileName);
+                this.File = new FileViewModel(dialog.FileName);
+                this.IsFileOpen = true;
+                this.File.LoadFileContent();
             }
         }
 
         private void Close()
         {
-            this.Logs.Clear();
-            this.FileName = null;
+            this.File = null;
         }
 
         private void Refresh()
         {
-            this.LoadFileContent(this.FileName);
-        }
-
-        private void LoadFileContent(string file)
-        {
-            this.Logs.Clear();
-            try
+            if (this.File != null)
             {
-                foreach (var line in File.ReadAllLines(file))
-                {
-                    this.Logs.Add(line);
-                }
-            }
-            catch (Exception ex)
-            {
-                this.Logs.Clear();
-                this.Logs.Add(string.Format("Error opening file: {0}", ex));
+                this.File.LoadFileContent();
             }
         }
     }
