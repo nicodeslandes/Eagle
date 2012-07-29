@@ -76,7 +76,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Behavior\ScrollToEndBehavior.cs" />
+    <Compile Include="Behaviors\ScrollToEndBehavior.cs" />
     <Compile Include="ViewModel\FileViewModel.cs" />
     <Compile Include="ViewModel\ObservableCollectionEx.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
