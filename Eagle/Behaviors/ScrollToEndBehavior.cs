@@ -88,10 +88,12 @@ namespace Eagle.Behaviors
                 NotifyCollectionChangedEventHandler collectionChangedEventHandler =
                     (sender, ea) =>
                     {
-                        if (ea.Action == NotifyCollectionChangedAction.Add)
+                        if (ea.Action == NotifyCollectionChangedAction.Add || ea.Action == NotifyCollectionChangedAction.Reset)
                         {
-                            var b = Interaction.GetBehaviors(o)
-                                .OfType<ScrollToEndBehavior>().Single();
+                            var b = Interaction
+                                .GetBehaviors(o)
+                                .OfType<ScrollToEndBehavior>()
+                                .Single();
                             b.ScheduleScrollToEnd();
                         }
                     };

@@ -36,10 +36,16 @@
             Grid.Row="2" 
             ItemsSource="{Binding File.Lines}" 
             FontFamily="Courier New" 
-            Visibility="{Binding IsFileOpen, Converter={StaticResource VisibilityConverter}}" Margin="1,0,-1,0">
+            Visibility="{Binding IsFileOpen, Converter={StaticResource VisibilityConverter}}" Margin="1,0,-1,0"
+            ScrollViewer.HorizontalScrollBarVisibility="Auto">
             <i:Interaction.Behaviors>
                 <b:ScrollToEndBehavior ScrollToEndOnNewItems="{Binding FollowTail}" />
             </i:Interaction.Behaviors>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Text, Mode=OneTime}" Padding="0" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
 
     </Grid>
