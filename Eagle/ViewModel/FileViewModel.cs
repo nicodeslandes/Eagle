@@ -6,6 +6,7 @@ using System.Linq;
 using GalaSoft.MvvmLight;
 using System.Windows;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Eagle.ViewModel
 {
@@ -18,6 +19,7 @@ namespace Eagle.ViewModel
         private FileStream _fileStream;
         private ObservableCollection<LineViewModel> _lines = new ObservableCollection<LineViewModel>();
         private byte _previousReadLastByte = 0;
+        private SynchronizationContext _syncContext;
 
         public ObservableCollection<LineViewModel> Lines
         {
@@ -39,6 +41,7 @@ namespace Eagle.ViewModel
         {
             this.Lines = new ObservableCollection<LineViewModel>();
             this.FileName = fileName;
+            _syncContext = SynchronizationContext.Current;
 
             if (IsInDesignMode)
             {
@@ -96,9 +99,12 @@ namespace Eagle.ViewModel
             }
 
             // Setup File change watcher
-            var w = new FileSystemWatcher(Path.GetDirectoryName(_fileName), Path.GetFileName(_fileName));
+            var w = new FileSystemWatcher(Path.GetDirectoryName(_fileName), Path.GetFileName(_fileName))
+            {
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size
+            };
             w.Changed += OnFileChanged;
-            w.BeginInit();
+            w.EnableRaisingEvents = true;
         }
 
         private IEnumerable<LineViewModel> ReadLines()
@@ -130,6 +136,7 @@ namespace Eagle.ViewModel
                 if (read > 0) _previousReadLastByte = buffer[read - 1];
             }
         }
+
         void OnFileChanged(object sender, FileSystemEventArgs e)
         {
             switch (e.ChangeType)
@@ -140,10 +147,15 @@ namespace Eagle.ViewModel
                     break;
                 case WatcherChangeTypes.Changed:
                     _fileStream.Seek(_currentReadPosition, SeekOrigin.Begin);
-                    foreach (var line in ReadLines())
-                    {
-                        this.Lines.Add(line);
-                    }
+                    var lines = ReadLines().ToList();
+
+                    _syncContext.Post(_ =>
+                        {
+                            foreach (var line in lines)
+                            {
+                                this.Lines.Add(line);
+                            }
+                        }, null);
                     break;
                 case WatcherChangeTypes.Renamed:
                     break;
