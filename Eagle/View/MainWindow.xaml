@@ -43,7 +43,11 @@
             </i:Interaction.Behaviors>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Text, Mode=OneTime}" Padding="0" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding LineNumber, Mode=OneTime}" Padding="0" />
+                        <TextBlock Text=" - " />
+                        <TextBlock Text="{Binding Text, Mode=OneTime}" Padding="0" />
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

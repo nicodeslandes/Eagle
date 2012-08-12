@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Windows.Data;
 using GalaSoft.MvvmLight;
+using System.Windows;
+using System.Diagnostics;
 
 namespace Eagle.ViewModel
 {
     public class FileViewModel : ViewModelBase
     {
         private string _fileName;
+        private int _currentReadPosition = 0;
+        private int _currentLineNumber = 1;
+        private int _currentLineIndex = 0;
+        private FileStream _fileStream;
         private ObservableCollection<LineViewModel> _lines = new ObservableCollection<LineViewModel>();
+        private byte _previousReadLastByte = 0;
 
         public ObservableCollection<LineViewModel> Lines
         {
@@ -73,43 +79,76 @@ namespace Eagle.ViewModel
             this.Lines.Clear();
             try
             {
-                var stream = File.Open(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-                var buffer = new byte[20480];
-                var currentLineNumber = 1;
-                var currentLineIndex = 0;
-                var lines = new ObservableCollection<LineViewModel>();
-                var position = 0;
-                byte previousReadLastByte = 0;
-                while (true)
-                {
-                    var read = stream.Read(buffer, 0, buffer.Length);
-                    if (read == 0)
-                        break;
-
-                    for (int i = 0; i < read; i++, position++)
-                    {
-                        if (buffer[i] == '\n')
-                        {
-                            int length = position - currentLineIndex;
-                            if (i > 0 && buffer[i-1] == '\r' || i == 0 && previousReadLastByte == '\r')
-                            {
-                                length--;
-                            }
-
-                            lines.Add(new LineViewModel(currentLineNumber++, currentLineIndex, length, stream));
-                            currentLineIndex = position + 1;
-                        }
-                    }
-
-                    if (read > 0) previousReadLastByte= buffer[read - 1];
-                }
-
+                _fileStream = File.Open(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+                _currentLineNumber = 1;
+                _currentLineIndex = 0;
+                _currentReadPosition = 0;
+                _previousReadLastByte = 0;
+                //var sw = Stopwatch.StartNew();
+                var lines = new ObservableCollection<LineViewModel>(ReadLines());
+                //MessageBox.Show(string.Format("{0} lines read in {1} ms", lines.Count, sw.ElapsedMilliseconds));
                 this.Lines = lines;
             }
             catch (Exception ex)
             {
                 this.Lines.Clear();
                 this.Lines.Add(new LineViewModel(string.Format("Error opening file: {0}", ex)));
+            }
+
+            // Setup File change watcher
+            var w = new FileSystemWatcher(Path.GetDirectoryName(_fileName), Path.GetFileName(_fileName));
+            w.Changed += OnFileChanged;
+            w.BeginInit();
+        }
+
+        private IEnumerable<LineViewModel> ReadLines()
+        {
+            var buffer = new byte[20480];
+            while (true)
+            {
+                var read = _fileStream.Read(buffer, 0, buffer.Length);
+                if (read == 0)
+                    break;
+
+                for (int i = 0; i < read; i++, _currentReadPosition++)
+                {
+                    if (buffer[i] == '\n')
+                    {
+                        int length = _currentReadPosition - _currentLineIndex;
+                        if (i > 0 && buffer[i - 1] == '\r' || i == 0 && _previousReadLastByte == 'é')
+                        {
+                            length--;
+                        }
+
+                        var line = new LineViewModel(_currentLineNumber++, _currentLineIndex, length, _fileStream);
+                        _currentLineIndex = _currentReadPosition + 1;
+                        yield return line;
+                    }
+
+                }
+
+                if (read > 0) _previousReadLastByte = buffer[read - 1];
+            }
+        }
+        void OnFileChanged(object sender, FileSystemEventArgs e)
+        {
+            switch (e.ChangeType)
+            {
+                case WatcherChangeTypes.Created:
+                    break;
+                case WatcherChangeTypes.Deleted:
+                    break;
+                case WatcherChangeTypes.Changed:
+                    _fileStream.Seek(_currentReadPosition, SeekOrigin.Begin);
+                    foreach (var line in ReadLines())
+                    {
+                        this.Lines.Add(line);
+                    }
+                    break;
+                case WatcherChangeTypes.Renamed:
+                    break;
+                case WatcherChangeTypes.All:
+                    break;
             }
         }
     }
