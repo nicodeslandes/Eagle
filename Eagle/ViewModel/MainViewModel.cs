@@ -5,6 +5,7 @@ using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
 using System;
 using System.Windows;
+using System.Text;
 
 namespace Eagle.ViewModel
 {
@@ -105,7 +106,7 @@ namespace Eagle.ViewModel
             var dialog = new OpenFileDialog();
             if (dialog.ShowDialog() == true)
             {
-                this.File = new FileViewModel(dialog.FileName);
+                this.File = new FileViewModel(dialog.FileName, Encoding.UTF8);
                 this.IsFileOpen = true;
                 this.File.LoadFileContent();
             }
@@ -113,7 +114,10 @@ namespace Eagle.ViewModel
 
         private void Close()
         {
-            this.File = null;
+            using (this.File)
+            {
+                this.File = null;
+            }
         }
 
         private void Refresh()

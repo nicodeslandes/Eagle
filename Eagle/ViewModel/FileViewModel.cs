@@ -4,19 +4,21 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using GalaSoft.MvvmLight;
-using System.Windows;
-using System.Diagnostics;
 using System.Threading;
+using System.Text;
 
 namespace Eagle.ViewModel
 {
     public class FileViewModel : ViewModelBase
     {
+        private bool _currentLineUnfinished;
+        private Encoding _encoding = Encoding.Default;
         private string _fileName;
         private int _currentReadPosition = 0;
         private int _currentLineNumber = 1;
         private int _currentLineIndex = 0;
         private FileStream _fileStream;
+        private FileSystemWatcher _fileWatcher;
         private ObservableCollection<LineViewModel> _lines = new ObservableCollection<LineViewModel>();
         private byte _previousReadLastByte = 0;
         private SynchronizationContext _syncContext;
@@ -37,8 +39,10 @@ namespace Eagle.ViewModel
             }
         }
 
-        public FileViewModel(string fileName)
+        public FileViewModel(string fileName, Encoding encoding = null)
         {
+            _encoding = encoding ?? Encoding.Default;
+
             this.Lines = new ObservableCollection<LineViewModel>();
             this.FileName = fileName;
             _syncContext = SynchronizationContext.Current;
@@ -82,11 +86,7 @@ namespace Eagle.ViewModel
             this.Lines.Clear();
             try
             {
-                _fileStream = File.Open(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-                _currentLineNumber = 1;
-                _currentLineIndex = 0;
-                _currentReadPosition = 0;
-                _previousReadLastByte = 0;
+                InitializeReadParameters();
                 //var sw = Stopwatch.StartNew();
                 var lines = new ObservableCollection<LineViewModel>(ReadLines());
                 //MessageBox.Show(string.Format("{0} lines read in {1} ms", lines.Count, sw.ElapsedMilliseconds));
@@ -99,20 +99,32 @@ namespace Eagle.ViewModel
             }
 
             // Setup File change watcher
-            var w = new FileSystemWatcher(Path.GetDirectoryName(_fileName), Path.GetFileName(_fileName))
-            {
-                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size
-            };
-            w.Changed += OnFileChanged;
-            w.EnableRaisingEvents = true;
+            _fileWatcher = new FileSystemWatcher(Path.GetDirectoryName(_fileName), Path.GetFileName(_fileName))
+                                    {
+                                        NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.Attributes
+                                    };
+            _fileWatcher.Changed += OnFileChanged;
+            _fileWatcher.EnableRaisingEvents = true;
+        }
+
+        private void InitializeReadParameters()
+        {
+            _currentLineNumber = 1;
+            _currentLineIndex = 0;
+            _currentReadPosition = 0;
+            _previousReadLastByte = 0;
+            _currentLineUnfinished = false;
         }
 
         private IEnumerable<LineViewModel> ReadLines()
         {
+            _fileStream = File.Open(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            _fileStream.Seek(_currentReadPosition, SeekOrigin.Begin);
             var buffer = new byte[20480];
+            int read = 0;
             while (true)
             {
-                var read = _fileStream.Read(buffer, 0, buffer.Length);
+                read = _fileStream.Read(buffer, 0, buffer.Length);
                 if (read == 0)
                     break;
 
@@ -120,21 +132,61 @@ namespace Eagle.ViewModel
                 {
                     if (buffer[i] == '\n')
                     {
-                        int length = _currentReadPosition - _currentLineIndex;
-                        if (i > 0 && buffer[i - 1] == '\r' || i == 0 && _previousReadLastByte == 'é')
-                        {
-                            length--;
-                        }
-
-                        var line = new LineViewModel(_currentLineNumber++, _currentLineIndex, length, _fileStream);
-                        _currentLineIndex = _currentReadPosition + 1;
-                        yield return line;
+                        var lastLineCharacter = (i > 0) ? buffer[i - 1] : _previousReadLastByte;
+                        LineViewModel newLine = ReadNewLine(lastLineCharacter, false);
+                        if (newLine != null)
+                            yield return newLine;
                     }
 
                 }
 
                 if (read > 0) _previousReadLastByte = buffer[read - 1];
             }
+
+            // End-of-file reached; if the last character read wasn't '\n', add the unfinished line
+            if (_previousReadLastByte != '\n' && _previousReadLastByte != '\0')
+            {
+                var line = ReadNewLine(_previousReadLastByte, true);
+                if (line != null)
+                    yield return line;
+            }
+
+            using (_fileStream) _fileStream = null;
+        }
+
+        private LineViewModel ReadNewLine(byte lastLineCharacter, bool isLineUnfinished)
+        {
+            int length = _currentReadPosition - _currentLineIndex;
+            if (lastLineCharacter == '\r')
+            {
+                length--;
+            }
+
+            // New line reached
+            LineViewModel newLine = null;
+            // Check if an unfinished line was being read
+            if (_currentLineUnfinished)
+            {
+                // Just update the current line with a new length
+                var lastLine = this.Lines[this.Lines.Count - 1];
+                lastLine.Length = length;
+            }
+            else
+            {
+                newLine = new LineViewModel(_currentLineNumber++, _currentLineIndex, length, _fileName, _encoding);
+            }
+
+            if (isLineUnfinished)
+            {
+                _currentLineUnfinished = true;
+            }
+            else
+            {
+                _currentLineIndex = _currentReadPosition + 1;
+                _currentLineUnfinished = false;
+            }
+
+            return newLine;
         }
 
         void OnFileChanged(object sender, FileSystemEventArgs e)
@@ -146,7 +198,6 @@ namespace Eagle.ViewModel
                 case WatcherChangeTypes.Deleted:
                     break;
                 case WatcherChangeTypes.Changed:
-                    _fileStream.Seek(_currentReadPosition, SeekOrigin.Begin);
                     var lines = ReadLines().ToList();
 
                     _syncContext.Post(_ =>
@@ -161,6 +212,18 @@ namespace Eagle.ViewModel
                     break;
                 case WatcherChangeTypes.All:
                     break;
+            }
+        }
+
+        public override void Cleanup()
+        {
+            base.Cleanup();
+
+            using (_fileStream)
+            using (_fileWatcher)
+            {
+                _fileStream = null;
+                _fileWatcher = null;
             }
         }
     }
