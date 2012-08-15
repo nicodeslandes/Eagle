@@ -30,14 +30,15 @@
                 </LinearGradientBrush>
             </DockPanel.Background>
             <Label Content="Current File: " />
-            <TextBlock Text="{Binding File.FileName}" VerticalAlignment="Center" />
+            <TextBox Text="{Binding File.FileName}" VerticalAlignment="Center" IsReadOnly="True" Background="Transparent" BorderThickness="0"/>
         </DockPanel>
-        <ListBox
+        <ListBox SnapsToDevicePixels="True" UseLayoutRounding="True"
             Grid.Row="2" 
             ItemsSource="{Binding File.Lines}" 
             FontFamily="Courier New" 
             Visibility="{Binding IsFileOpen, Converter={StaticResource VisibilityConverter}}" Margin="1,0,-1,0"
-            ScrollViewer.HorizontalScrollBarVisibility="Auto">
+            ScrollViewer.HorizontalScrollBarVisibility="Auto"
+            TextOptions.TextFormattingMode="Display" TextOptions.TextHintingMode="Fixed">
             <i:Interaction.Behaviors>
                 <b:ScrollToEndBehavior ScrollToEndOnNewItems="{Binding FollowTail}" />
             </i:Interaction.Behaviors>
