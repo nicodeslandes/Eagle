@@ -25,10 +25,15 @@ namespace Eagle.ViewModel
                 {
                     using (var stream = File.Open(_path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
                     {
+                        if (stream == null)
+                        {
+                            return null;
+                        }
+
                         stream.Seek(_startIndex, SeekOrigin.Begin);
                         var buffer = new byte[_length];
-                        stream.Read(buffer, 0, _length);
-                        _text = _encoding.GetString(buffer);
+                        int read = stream.Read(buffer, 0, _length);
+                        _text = _encoding.GetString(buffer, 0, read);
                     }
                 }
                 return _text;

@@ -17,7 +17,6 @@ namespace Eagle.ViewModel
         private int _currentReadPosition = 0;
         private int _currentLineNumber = 1;
         private int _currentLineIndex = 0;
-        private FileStream _fileStream;
         private FileSystemWatcher _fileWatcher;
         private ObservableCollection<LineViewModel> _lines = new ObservableCollection<LineViewModel>();
         private byte _previousReadLastByte = 0;
@@ -88,7 +87,8 @@ namespace Eagle.ViewModel
             {
                 InitializeReadParameters();
                 //var sw = Stopwatch.StartNew();
-                var lines = new ObservableCollection<LineViewModel>(ReadLines());
+                bool fullReadPerformed;
+                var lines = new ObservableCollection<LineViewModel>(ReadLines(out fullReadPerformed));
                 //MessageBox.Show(string.Format("{0} lines read in {1} ms", lines.Count, sw.ElapsedMilliseconds));
                 this.Lines = lines;
             }
@@ -116,42 +116,67 @@ namespace Eagle.ViewModel
             _currentLineUnfinished = false;
         }
 
-        private IEnumerable<LineViewModel> ReadLines()
+        private IEnumerable<LineViewModel> ReadLines(out bool fullReadPerformed)
         {
-            _fileStream = File.Open(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-            _fileStream.Seek(_currentReadPosition, SeekOrigin.Begin);
-            var buffer = new byte[20480];
-            int read = 0;
-            while (true)
+            var fileStream = File.Open(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            if (fileStream == null)
             {
-                read = _fileStream.Read(buffer, 0, buffer.Length);
-                if (read == 0)
-                    break;
+                this.InitializeReadParameters();
+                fullReadPerformed = true;
+                return Enumerable.Empty<LineViewModel>();
+            }
 
-                for (int i = 0; i < read; i++, _currentReadPosition++)
+            // Has the file shrunk?
+            if (fileStream.Length < _currentReadPosition)
+            {
+                // Yes it has; perform a new full read
+                fullReadPerformed = true;
+                this.InitializeReadParameters();
+            }
+            else
+            {
+                fullReadPerformed = false;
+            }
+
+            return this.DoReadLines(fileStream);
+        }
+
+        private IEnumerable<LineViewModel> DoReadLines(FileStream fileStream)
+        {
+            using (fileStream)
+            {
+                fileStream.Seek(_currentReadPosition, SeekOrigin.Begin);
+                var buffer = new byte[20480];
+                int read = 0;
+                while (true)
                 {
-                    if (buffer[i] == '\n')
+                    read = fileStream.Read(buffer, 0, buffer.Length);
+                    if (read == 0)
+                        break;
+
+                    for (int i = 0; i < read; i++, _currentReadPosition++)
                     {
-                        var lastLineCharacter = (i > 0) ? buffer[i - 1] : _previousReadLastByte;
-                        LineViewModel newLine = ReadNewLine(lastLineCharacter, false);
-                        if (newLine != null)
-                            yield return newLine;
+                        if (buffer[i] == '\n')
+                        {
+                            var lastLineCharacter = (i > 0) ? buffer[i - 1] : _previousReadLastByte;
+                            LineViewModel newLine = ReadNewLine(lastLineCharacter, false);
+                            if (newLine != null)
+                                yield return newLine;
+                        }
+
                     }
 
+                    if (read > 0) _previousReadLastByte = buffer[read - 1];
                 }
 
-                if (read > 0) _previousReadLastByte = buffer[read - 1];
+                // End-of-file reached; if the last character read wasn't '\n', add the unfinished line
+                if (_previousReadLastByte != '\n' && _previousReadLastByte != '\0')
+                {
+                    var line = ReadNewLine(_previousReadLastByte, true);
+                    if (line != null)
+                        yield return line;
+                }
             }
-
-            // End-of-file reached; if the last character read wasn't '\n', add the unfinished line
-            if (_previousReadLastByte != '\n' && _previousReadLastByte != '\0')
-            {
-                var line = ReadNewLine(_previousReadLastByte, true);
-                if (line != null)
-                    yield return line;
-            }
-
-            using (_fileStream) _fileStream = null;
         }
 
         private LineViewModel ReadNewLine(byte lastLineCharacter, bool isLineUnfinished)
@@ -198,13 +223,21 @@ namespace Eagle.ViewModel
                 case WatcherChangeTypes.Deleted:
                     break;
                 case WatcherChangeTypes.Changed:
-                    var lines = ReadLines().ToList();
+                    bool fullReadPerformed;
+                    var lines = ReadLines(out fullReadPerformed).ToList();
 
                     _syncContext.Post(_ =>
                         {
-                            foreach (var line in lines)
+                            if (fullReadPerformed)
                             {
-                                this.Lines.Add(line);
+                                this.Lines = new ObservableCollection<LineViewModel>(lines);
+                            }
+                            else
+                            {
+                                foreach (var line in lines)
+                                {
+                                    this.Lines.Add(line);
+                                }
                             }
                         }, null);
                     break;
@@ -219,10 +252,8 @@ namespace Eagle.ViewModel
         {
             base.Cleanup();
 
-            using (_fileStream)
             using (_fileWatcher)
             {
-                _fileStream = null;
                 _fileWatcher = null;
             }
         }
