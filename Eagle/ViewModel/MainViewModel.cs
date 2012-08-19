@@ -1,10 +1,7 @@
-using System.Collections.ObjectModel;
-using System.IO;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
 using System;
-using System.Windows;
 using System.Text;
 
 namespace Eagle.ViewModel

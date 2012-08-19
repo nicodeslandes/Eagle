@@ -12,7 +12,7 @@ namespace Eagle.ViewModel
     public class FileViewModel : ViewModelBase
     {
         private bool _currentLineUnfinished;
-        private Encoding _encoding = Encoding.Default;
+        private readonly Encoding _encoding = Encoding.Default;
         private string _fileName;
         private int _currentReadPosition = 0;
         private int _currentLineNumber = 1;
@@ -20,7 +20,7 @@ namespace Eagle.ViewModel
         private FileSystemWatcher _fileWatcher;
         private ObservableCollection<LineViewModel> _lines = new ObservableCollection<LineViewModel>();
         private byte _previousReadLastByte = 0;
-        private SynchronizationContext _syncContext;
+        private readonly SynchronizationContext _syncContext;
 
         public ObservableCollection<LineViewModel> Lines
         {

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Data;
 using GalaSoft.MvvmLight;
 
 namespace Eagle.ViewModel
 {
     public class LineViewModel : ViewModelBase
     {
-        private Encoding _encoding;
+        private readonly Encoding _encoding;
         private string _text;
         private readonly string _path;
         private readonly int _startIndex;
