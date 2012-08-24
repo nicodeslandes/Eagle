@@ -11,7 +11,7 @@ namespace Eagle.ViewModel
 {
     public class FileViewModel : ViewModelBase
     {
-        private bool _currentLineUnfinished;
+        private LineViewModel _currentUnfinishedLine;
         private readonly Encoding _encoding = Encoding.Default;
         private string _fileName;
         private int _currentReadPosition = 0;
@@ -113,7 +113,7 @@ namespace Eagle.ViewModel
             _currentLineIndex = 0;
             _currentReadPosition = 0;
             _previousReadLastByte = 0;
-            _currentLineUnfinished = false;
+            _currentUnfinishedLine = null;
         }
 
         private IEnumerable<LineViewModel> ReadLines(out bool fullReadPerformed)
@@ -190,11 +190,10 @@ namespace Eagle.ViewModel
             // New line reached
             LineViewModel newLine = null;
             // Check if an unfinished line was being read
-            if (_currentLineUnfinished)
+            if (_currentUnfinishedLine != null)
             {
                 // Just update the current line with a new length
-                var lastLine = this.Lines[this.Lines.Count - 1];
-                lastLine.Length = length;
+                _currentUnfinishedLine.Length = length;
             }
             else
             {
@@ -203,12 +202,12 @@ namespace Eagle.ViewModel
 
             if (isLineUnfinished)
             {
-                _currentLineUnfinished = true;
+                _currentUnfinishedLine = newLine ?? _currentUnfinishedLine;
             }
             else
             {
                 _currentLineIndex = _currentReadPosition + 1;
-                _currentLineUnfinished = false;
+                _currentUnfinishedLine = null;
             }
 
             return newLine;
