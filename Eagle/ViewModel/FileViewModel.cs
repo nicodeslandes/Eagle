@@ -6,6 +6,9 @@ using System.Linq;
 using GalaSoft.MvvmLight;
 using System.Threading;
 using System.Text;
+using System.Windows.Data;
+using Eagle.Common.Threading;
+using System.Threading.Tasks;
 
 namespace Eagle.ViewModel
 {
@@ -21,6 +24,8 @@ namespace Eagle.ViewModel
         private ObservableCollection<LineViewModel> _lines = new ObservableCollection<LineViewModel>();
         private byte _previousReadLastByte = 0;
         private readonly SynchronizationContext _syncContext;
+        private readonly object _linesSync = new object();
+        private SingleTaskRunner _readNewLinesTaskRunner;
 
         public ObservableCollection<LineViewModel> Lines
         {
@@ -45,6 +50,7 @@ namespace Eagle.ViewModel
             this.Lines = new ObservableCollection<LineViewModel>();
             this.FileName = fileName;
             _syncContext = SynchronizationContext.Current;
+            _readNewLinesTaskRunner = new SingleTaskRunner(ReadNewLinesFromFile);
 
             if (IsInDesignMode)
             {
@@ -85,12 +91,13 @@ namespace Eagle.ViewModel
             this.Lines.Clear();
             try
             {
-                InitializeReadParameters();
-                //var sw = Stopwatch.StartNew();
-                bool fullReadPerformed;
-                var lines = new ObservableCollection<LineViewModel>(ReadLines(out fullReadPerformed));
-                //MessageBox.Show(string.Format("{0} lines read in {1} ms", lines.Count, sw.ElapsedMilliseconds));
-                this.Lines = lines;
+                // Check we can open the file
+                using (File.OpenRead(_fileName)) { }
+
+                this.Lines.Add(new LineViewModel("Loading..."));
+
+                // Trigger a new read
+                _readNewLinesTaskRunner.TriggerExecution();
             }
             catch (Exception ex)
             {
@@ -126,8 +133,9 @@ namespace Eagle.ViewModel
                 return Enumerable.Empty<LineViewModel>();
             }
 
-            // Has the file shrunk?
-            if (fileStream.Length < _currentReadPosition)
+            // Has the file shrunk? Or is this the first read
+            var diff = fileStream.Length - _currentReadPosition;
+            if (diff < 0 || _currentReadPosition == 0)
             {
                 // Yes it has; perform a new full read
                 fullReadPerformed = true;
@@ -222,23 +230,12 @@ namespace Eagle.ViewModel
                 case WatcherChangeTypes.Deleted:
                     break;
                 case WatcherChangeTypes.Changed:
-                    bool fullReadPerformed;
-                    var lines = ReadLines(out fullReadPerformed).ToList();
-
-                    _syncContext.Post(_ =>
+                    Task.Delay(TimeSpan.FromMilliseconds(50))
+                        .ContinueWith(_ =>
                         {
-                            if (fullReadPerformed)
-                            {
-                                this.Lines = new ObservableCollection<LineViewModel>(lines);
-                            }
-                            else
-                            {
-                                foreach (var line in lines)
-                                {
-                                    this.Lines.Add(line);
-                                }
-                            }
-                        }, null);
+                            // Trigger a new read
+                            _readNewLinesTaskRunner.TriggerExecution();
+                        });
                     break;
                 case WatcherChangeTypes.Renamed:
                     break;
@@ -247,6 +244,27 @@ namespace Eagle.ViewModel
             }
         }
 
+        private void ReadNewLinesFromFile()
+        {
+            bool fullReadPerformed;
+            var lines = ReadLines(out fullReadPerformed).ToList();
+
+            if (fullReadPerformed)
+            {
+                _syncContext.Post(_ =>
+                    {
+                        this.Lines = new ObservableCollection<LineViewModel>(lines);
+                        BindingOperations.EnableCollectionSynchronization(this.Lines, this._linesSync);
+                    }, null);
+            }
+            else
+            {
+                foreach (var line in lines)
+                {
+                    this.Lines.Add(line);
+                }
+            }
+        }
         public override void Cleanup()
         {
             base.Cleanup();

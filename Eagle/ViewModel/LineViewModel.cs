@@ -47,6 +47,9 @@ namespace Eagle.ViewModel
             {
                 if (_length != value)
                 {
+                    if (value < 0)
+                        throw new ArgumentException("Invalid length: " + value, "value");
+
                     _length = value;
                     RefreshText();
                 }
@@ -61,6 +64,11 @@ namespace Eagle.ViewModel
 
         public LineViewModel(int lineNumber, int startIndex, int length, string path, Encoding encoding)
         {
+            if (length < 0)
+                throw new ArgumentException("Invalid length: " + length, "length");
+            if (startIndex < 0)
+                throw new ArgumentException("Invalid startIndex: " + startIndex, "startIndex");
+
             _encoding = encoding;
             LineNumber = lineNumber;
             _startIndex = startIndex;

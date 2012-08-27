@@ -2,6 +2,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
 using System;
+using System.ComponentModel;
 using System.Text;
 
 namespace Eagle.ViewModel
@@ -38,6 +39,7 @@ namespace Eagle.ViewModel
             }
         }
 
+        private bool _showLineNumbers = false;
         private bool _followTail;
         private bool _isFileOpen = false;
         private FileViewModel _file;
@@ -94,6 +96,23 @@ namespace Eagle.ViewModel
                     var old = _followTail;
                     _followTail = value;
                     this.RaisePropertyChanged("FollowTail", old, value, true);
+                }
+            }
+        }
+
+        public bool ShowLineNumbers
+        {
+            get
+            {
+                return _showLineNumbers;
+            }
+
+            set
+            {
+                if (_showLineNumbers != value)
+                {
+                    _showLineNumbers = value;
+                    this.RaisePropertyChanged("ShowLineNumbers", !!value, value, true);
                 }
             }
         }
