@@ -92,7 +92,7 @@ namespace Eagle.ViewModel
             try
             {
                 // Check we can open the file
-                using (File.OpenRead(_fileName)) { }
+                using (OpenFile()) { }
 
                 this.Lines.Add(new LineViewModel("Loading..."));
 
@@ -125,7 +125,7 @@ namespace Eagle.ViewModel
 
         private IEnumerable<LineViewModel> ReadLines(out bool fullReadPerformed)
         {
-            var fileStream = File.Open(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            var fileStream = OpenFile();
             if (fileStream == null)
             {
                 this.InitializeReadParameters();
@@ -147,6 +147,11 @@ namespace Eagle.ViewModel
             }
 
             return this.DoReadLines(fileStream);
+        }
+
+        private FileStream OpenFile()
+        {
+            return File.Open(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
         }
 
         private IEnumerable<LineViewModel> DoReadLines(FileStream fileStream)
