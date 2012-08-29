@@ -32,6 +32,7 @@ namespace Eagle.Common.Threading
                 }
                 else
                 {
+                    _newExecutionTriggered = false;
                     _taskRunning = true;
                     scheduleNewTask = true;
                 }
@@ -43,18 +44,28 @@ namespace Eagle.Common.Threading
 
         private void RunAction()
         {
-            while(true)
+            try
             {
-                _action();
-
-                lock (_sync)
+                while (true)
                 {
-                    if (!_newExecutionTriggered)
+                    _action();
+
+                    lock (_sync)
                     {
-                        _taskRunning = false;
-                        return;
+                        if (_newExecutionTriggered)
+                        {
+                            _newExecutionTriggered = false;
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
                 }
+            }
+            finally
+            {
+                _taskRunning = false;
             }
         }
     }

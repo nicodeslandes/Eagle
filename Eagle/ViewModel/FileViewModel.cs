@@ -133,7 +133,7 @@ namespace Eagle.ViewModel
                 return Enumerable.Empty<LineViewModel>();
             }
 
-            // Has the file shrunk? Or is this the first read
+            // Has the file shrunk? Or is this the first read?
             var diff = fileStream.Length - _currentReadPosition;
             if (diff < 0 || _currentReadPosition == 0)
             {
