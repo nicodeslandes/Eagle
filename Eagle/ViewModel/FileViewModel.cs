@@ -25,7 +25,7 @@ namespace Eagle.ViewModel
         private byte _previousReadLastByte = 0;
         private readonly SynchronizationContext _syncContext;
         private readonly object _linesSync = new object();
-        private SingleTaskRunner _readNewLinesTaskRunner;
+        private readonly SingleTaskRunner _readNewLinesTaskRunner;
 
         public ObservableCollection<LineViewModel> Lines
         {
@@ -86,9 +86,14 @@ namespace Eagle.ViewModel
             }
         }
 
-        public void LoadFileContent()
+        public async void LoadFileContent()
         {
+            this.InitializeReadParameters();
             this.Lines.Clear();
+
+            // Wait for any pending read
+            await _readNewLinesTaskRunner.Stop();
+
             try
             {
                 // Check we can open the file
@@ -97,6 +102,7 @@ namespace Eagle.ViewModel
                 this.Lines.Add(new LineViewModel("Loading..."));
 
                 // Trigger a new read
+                _readNewLinesTaskRunner.Start();
                 _readNewLinesTaskRunner.TriggerExecution();
             }
             catch (Exception ex)

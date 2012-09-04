@@ -10,8 +10,9 @@ namespace Eagle.Common.Threading
     {
         private readonly Action _action;
         private readonly object _sync = new object();
-        private bool _taskRunning;
+        private Task _runningTask;
         private bool _newExecutionTriggered;
+        private bool _stopped;
 
         /// <summary>
         /// Initializes a new instance of the SingleTaskRunner class.
@@ -23,30 +24,42 @@ namespace Eagle.Common.Threading
 
         public void TriggerExecution()
         {
-            bool scheduleNewTask = false;
             lock (_sync)
             {
-                if (_taskRunning)
+                if (_runningTask != null)
                 {
                     _newExecutionTriggered = true;
                 }
                 else
                 {
                     _newExecutionTriggered = false;
-                    _taskRunning = true;
-                    scheduleNewTask = true;
+                    _runningTask = Task.Run(new Action(RunAction));
                 }
             }
+        }
 
-            if (scheduleNewTask)
-                Task.Run(new Action(RunAction));
+        public void Start()
+        {
+            _stopped = false;
+        }
+
+        public Task Stop()
+        {
+            _stopped = true;
+            lock (_sync)
+            {
+                if (_runningTask != null)
+                    return _runningTask;
+            }
+
+            return Task.FromResult<object>(null);
         }
 
         private void RunAction()
         {
             try
             {
-                while (true)
+                while (!_stopped)
                 {
                     _action();
 
@@ -65,7 +78,7 @@ namespace Eagle.Common.Threading
             }
             finally
             {
-                _taskRunning = false;
+                _runningTask = null;
             }
         }
     }
