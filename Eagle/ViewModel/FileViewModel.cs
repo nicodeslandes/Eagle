@@ -232,7 +232,7 @@ namespace Eagle.ViewModel
             return newLine;
         }
 
-        void OnFileChanged(object sender, FileSystemEventArgs e)
+        async void OnFileChanged(object sender, FileSystemEventArgs e)
         {
             switch (e.ChangeType)
             {
@@ -241,12 +241,9 @@ namespace Eagle.ViewModel
                 case WatcherChangeTypes.Deleted:
                     break;
                 case WatcherChangeTypes.Changed:
-                    Task.Delay(TimeSpan.FromMilliseconds(50))
-                        .ContinueWith(_ =>
-                        {
-                            // Trigger a new read
-                            _readNewLinesTaskRunner.TriggerExecution();
-                        });
+                    await Task.Delay(TimeSpan.FromMilliseconds(50));
+                    // Trigger a new read
+                    _readNewLinesTaskRunner.TriggerExecution();
                     break;
                 case WatcherChangeTypes.Renamed:
                     break;
@@ -292,6 +289,11 @@ namespace Eagle.ViewModel
             await _readNewLinesTaskRunner.Stop();
             this.Lines.Clear();
             _readNewLinesTaskRunner.Start();
+            _readNewLinesTaskRunner.TriggerExecution();
+        }
+
+        public void Refresh()
+        {
             _readNewLinesTaskRunner.TriggerExecution();
         }
     }

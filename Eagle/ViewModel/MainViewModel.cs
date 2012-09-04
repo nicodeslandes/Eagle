@@ -27,9 +27,10 @@ namespace Eagle.ViewModel
         public MainViewModel()
         {
             this.OpenCommand = new RelayCommand(this.Open);
-            this.CloseCommand = new RelayCommand(this.Close, () => this.File != null);
+            this.ReloadCommand = new RelayCommand(this.Reload, () => this.File != null);
             this.RefreshCommand = new RelayCommand(this.Refresh, () => this.File != null);
             this.ClearCommand = new RelayCommand(this.Clear, () => this.File != null);
+            this.CloseCommand = new RelayCommand(this.Close, () => this.File != null);
 
             this.FollowTail = true;
 
@@ -82,6 +83,8 @@ namespace Eagle.ViewModel
         public RelayCommand CloseCommand { get; private set; }
 
         public RelayCommand RefreshCommand { get; private set; }
+
+        public RelayCommand ReloadCommand { get; private set; }
 
         public RelayCommand ClearCommand { get; private set; }
 
@@ -140,6 +143,14 @@ namespace Eagle.ViewModel
         }
 
         private void Refresh()
+        {
+            if (this.File != null)
+            {
+                this.File.Refresh();
+            }
+        }
+
+        private void Reload()
         {
             if (this.File != null)
             {

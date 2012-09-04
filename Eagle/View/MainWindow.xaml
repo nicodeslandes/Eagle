@@ -19,6 +19,7 @@
         <ToolBarTray VerticalAlignment="Top">
             <ToolBar>
                 <Button Content="Open" Command="{Binding OpenCommand}" />
+                <Button Content="Reload" Command="{Binding ReloadCommand}" />
                 <Button Content="Refresh" Command="{Binding RefreshCommand}" />
                 <Button VerticalAlignment="Bottom">
                     <CheckBox Content="Follow Tail" IsChecked="{Binding FollowTail, Mode=TwoWay}" />
