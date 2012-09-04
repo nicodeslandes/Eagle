@@ -285,5 +285,14 @@ namespace Eagle.ViewModel
                 _fileWatcher = null;
             }
         }
+
+        public async void ClearContent()
+        {
+            // Wait for pending reads
+            await _readNewLinesTaskRunner.Stop();
+            this.Lines.Clear();
+            _readNewLinesTaskRunner.Start();
+            _readNewLinesTaskRunner.TriggerExecution();
+        }
     }
 }

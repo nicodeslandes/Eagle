@@ -26,6 +26,7 @@
                 <Button VerticalAlignment="Bottom">
                     <CheckBox Content="Show Line Numbers" IsChecked="{Binding ShowLineNumbers, Mode=TwoWay}" />
                 </Button>
+                <Button Content="Clear" Command="{Binding ClearCommand}" RenderTransformOrigin="0.5,0.5" />
                 <Button Content="Close" Command="{Binding CloseCommand}" RenderTransformOrigin="0.5,0.5" />
             </ToolBar>
         </ToolBarTray>
