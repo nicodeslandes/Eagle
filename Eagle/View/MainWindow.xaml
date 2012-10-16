@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:Eagle.ViewModel"
         xmlns:b="clr-namespace:Eagle.Behaviors"
+        xmlns:fp="clr-namespace:Eagle.FilePicker.View"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         Title="Eagle" Height="800" Width="800"
         DataContext="{Binding Main, Source={StaticResource Locator}}">
@@ -16,7 +17,12 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition />
         </Grid.RowDefinitions>
-        <ToolBarTray VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="3" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <ToolBarTray VerticalAlignment="Top" Grid.ColumnSpan="3">
             <ToolBar>
                 <Button Content="Open" Command="{Binding OpenCommand}" />
                 <Button Content="Reload" Command="{Binding ReloadCommand}" />
@@ -31,7 +37,7 @@
                 <Button Content="Close" Command="{Binding CloseCommand}" RenderTransformOrigin="0.5,0.5" />
             </ToolBar>
         </ToolBarTray>
-        <DockPanel Grid.Row="1" Visibility="{Binding IsFileOpen, Converter={StaticResource VisibilityConverter}}">
+        <DockPanel Grid.Row="1" Grid.ColumnSpan="3" Visibility="{Binding IsFileOpen, Converter={StaticResource VisibilityConverter}}">
             <DockPanel.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFF3F2F0" Offset="0"/>
@@ -41,12 +47,17 @@
             <Label Content="Current File: " />
             <TextBox Text="{Binding File.FileName}" VerticalAlignment="Center" IsReadOnly="True" Background="Transparent" BorderThickness="0"/>
         </DockPanel>
-        <ListBox SnapsToDevicePixels="True" UseLayoutRounding="True"
-            Grid.Row="2" 
+        <fp:FilePickerView Grid.Row="2" DataContext="{Binding FilePicker}" />
+        <GridSplitter Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" />
+        <ListBox SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1"
+            Grid.Row="2" Grid.Column="2"
             ItemsSource="{Binding File.Lines}" 
             FontFamily="Courier New" 
             Visibility="{Binding IsFileOpen, Converter={StaticResource VisibilityConverter}}" Margin="1,0,-1,0"
             ScrollViewer.HorizontalScrollBarVisibility="Auto" TextOptions.TextFormattingMode="Display">
+        	<ListBox.ContextMenu>
+        		<ContextMenu Style="{DynamicResource ContextMenuStyle1}"/>
+        	</ListBox.ContextMenu>
             <i:Interaction.Behaviors>
                 <b:ScrollToEndBehavior ScrollToEndOnNewItems="{Binding FollowTail}" />
             </i:Interaction.Behaviors>
@@ -62,6 +73,5 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
     </Grid>
 </Window>

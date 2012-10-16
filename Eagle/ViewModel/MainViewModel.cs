@@ -1,8 +1,8 @@
+using Eagle.FilePicker.ViewModel;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
 using System;
-using System.ComponentModel;
 using System.Text;
 
 namespace Eagle.ViewModel
@@ -32,6 +32,8 @@ namespace Eagle.ViewModel
             this.ClearCommand = new RelayCommand(this.Clear, () => this.File != null);
             this.CloseCommand = new RelayCommand(this.Close, () => this.File != null);
 
+            this.FilePicker = new FilePickerViewModel();
+
             this.FollowTail = true;
 
             if (this.IsInDesignMode)
@@ -39,6 +41,10 @@ namespace Eagle.ViewModel
                 this.IsFileOpen = true;
                 this.File = new FileViewModel("Test File");
             }
+
+            this.FilePicker.Locations.Add(new FileLocationViewModel("Documents") { SubLocations = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
+            this.FilePicker.Locations.Add(new FileLocationViewModel("Projects"));
+            this.FilePicker.Locations.Add(new FileLocationViewModel("Logs"));
         }
 
         private bool _showLineNumbers = false;
@@ -77,6 +83,8 @@ namespace Eagle.ViewModel
                 }
             }
         }
+
+        public FilePickerViewModel FilePicker { get; private set; }
 
         public RelayCommand OpenCommand { get; private set; }
 

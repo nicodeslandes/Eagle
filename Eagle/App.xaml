@@ -10,7 +10,12 @@
     xmlns:cv="clr-namespace:Eagle.Common.Converters;assembly=Eagle.Common"
     mc:Ignorable="d">
     <Application.Resources>
-        <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
-        <cv:VisibilityConverter x:Key="VisibilityConverter" />
+    	<ResourceDictionary>
+    		<ResourceDictionary.MergedDictionaries>
+    			<ResourceDictionary Source="Styles/Styles.Menu.xaml"/>
+    		</ResourceDictionary.MergedDictionaries>
+    		<vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" />
+    		<cv:VisibilityConverter x:Key="VisibilityConverter" />
+    	</ResourceDictionary>
     </Application.Resources>
 </Application>
