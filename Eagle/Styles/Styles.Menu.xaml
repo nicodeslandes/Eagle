@@ -32,12 +32,12 @@
                 <Path Data="M0,0L4,3.5 0,7z" Fill="#FF212121" Name="RightArrow" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="5" />
                 <Popup Placement="Right" HorizontalOffset="-2" VerticalOffset="-3" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" AllowsTransparency="True" Name="PART_Popup" Focusable="False" IsOpen="{TemplateBinding IsSubmenuOpen}">
                     <Grid>
-                        <Rectangle Fill="#71000000" Margin="0,0,5,5">
+                        <Rectangle Fill="#71000000" Margin="5">
                             <Rectangle.Effect>
-                                <DropShadowEffect />
+                                <DropShadowEffect BlurRadius="5" />
                             </Rectangle.Effect>
                         </Rectangle>
-                        <Border BorderThickness="1" Padding="1" BorderBrush="#FF999999" Background="{StaticResource ContextMenuBackground}" Name="SubMenuBorder" Margin="0,0,5,5">
+                        <Border BorderThickness="1" Padding="1" BorderBrush="#FF999999" Background="{StaticResource ContextMenuBackground}" Name="SubMenuBorder" Margin="0,0,4,4">
                             <ScrollViewer Style="{DynamicResource {ComponentResourceKey TypeInTargetAssembly=FrameworkElement, ResourceId=MenuScrollViewer}}" Name="SubMenuScrollViewer">
                                 <Grid  RenderOptions.ClearTypeHint="Enabled">
                                     <Canvas Width="0" Height="0" HorizontalAlignment="Left" VerticalAlignment="Top">
