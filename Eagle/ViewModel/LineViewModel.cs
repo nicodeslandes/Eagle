@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.IO;
-using System.Linq;
 using System.Text;
-using GalaSoft.MvvmLight;
 
 namespace Eagle.ViewModel
 {
