@@ -2,7 +2,6 @@ using Eagle.FilePicker.ViewModel;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
-using System;
 using System.Text;
 
 namespace Eagle.ViewModel
