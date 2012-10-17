@@ -4,7 +4,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mwt="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
     mc:Ignorable="d">
     <SolidColorBrush x:Key="ContextMenuBackground" Color="#FFF5F5F5" />
     <ControlTemplate TargetType="MenuItem" x:Key="SubMenuHeaderTemplate">
@@ -33,7 +32,11 @@
                 <Path Data="M0,0L4,3.5 0,7z" Fill="#FF212121" Name="RightArrow" Margin="10,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="5" />
                 <Popup Placement="Right" HorizontalOffset="-2" VerticalOffset="-3" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" AllowsTransparency="True" Name="PART_Popup" Focusable="False" IsOpen="{TemplateBinding IsSubmenuOpen}">
                     <Grid>
-                        <mwt:SystemDropShadowChrome Color="#71000000" Name="Shdw" SnapsToDevicePixels="True" Margin="0,0,5,5" />
+                        <Rectangle Fill="#71000000" Margin="0,0,5,5">
+                            <Rectangle.Effect>
+                                <DropShadowEffect />
+                            </Rectangle.Effect>
+                        </Rectangle>
                         <Border BorderThickness="1" Padding="1" BorderBrush="#FF999999" Background="{StaticResource ContextMenuBackground}" Name="SubMenuBorder" Margin="0,0,5,5">
                             <ScrollViewer Style="{DynamicResource {ComponentResourceKey TypeInTargetAssembly=FrameworkElement, ResourceId=MenuScrollViewer}}" Name="SubMenuScrollViewer">
                                 <Grid  RenderOptions.ClearTypeHint="Enabled">
@@ -321,129 +324,6 @@
                 <HierarchicalDataTemplate ItemsSource="{Binding SubItems}" >
                     <TextBlock Text="{Binding Header}"/>
                 </HierarchicalDataTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-
-    <Style TargetType="ContextMenu" x:Key="ContextMenuStyle">
-        <Setter Property="Panel.Background" Value="{StaticResource ContextMenuBackground}" />
-        <Setter Property="TextElement.FontFamily">
-            <Setter.Value>
-                <DynamicResource ResourceKey="{x:Static SystemFonts.MenuFontFamilyKey}" />
-            </Setter.Value>
-        </Setter>
-        <Setter Property="TextElement.FontSize">
-            <Setter.Value>
-                <DynamicResource ResourceKey="{x:Static SystemFonts.MenuFontSizeKey}" />
-            </Setter.Value>
-        </Setter>
-        <Setter Property="TextElement.FontStyle">
-            <Setter.Value>
-                <DynamicResource ResourceKey="{x:Static SystemFonts.MenuFontStyleKey}" />
-            </Setter.Value>
-        </Setter>
-        <Setter Property="TextElement.FontWeight">
-            <Setter.Value>
-                <DynamicResource ResourceKey="{x:Static SystemFonts.MenuFontWeightKey}" />
-            </Setter.Value>
-        </Setter>
-        <Setter Property="TextElement.Foreground">
-            <Setter.Value>
-                <DynamicResource ResourceKey="{x:Static SystemColors.MenuTextBrushKey}" />
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Control.VerticalContentAlignment">
-            <Setter.Value>
-                <x:Static Member="VerticalAlignment.Center" />
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Border.BorderThickness">
-            <Setter.Value>
-                <Thickness>1,1,1,1</Thickness>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Border.BorderBrush">
-            <Setter.Value>
-                <SolidColorBrush>#FF959595</SolidColorBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Control.Padding">
-            <Setter.Value>
-                <Thickness>2,2,2,2</Thickness>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Grid.IsSharedSizeScope">
-            <Setter.Value>
-                <s:Boolean>True</s:Boolean>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="ContextMenuService.HasDropShadow">
-            <Setter.Value>
-                <DynamicResource ResourceKey="{x:Static SystemParameters.DropShadowKey}" />
-            </Setter.Value>
-        </Setter>
-        <Setter Property="ScrollViewer.PanningMode">
-            <Setter.Value>
-                <x:Static Member="PanningMode.Both" />
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Stylus.IsFlicksEnabled">
-            <Setter.Value>
-                <s:Boolean>False</s:Boolean>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Control.Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ContextMenu">
-                    <mwt:SystemDropShadowChrome Color="#00FFFFFF" Name="Shdw" SnapsToDevicePixels="True">
-                        <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}" Name="ContextMenuBorder">
-                            <ScrollViewer Style="{DynamicResource {ComponentResourceKey TypeInTargetAssembly=FrameworkElement, ResourceId=MenuScrollViewer}}" Name="ContextMenuScrollViewer" Grid.ColumnSpan="2">
-                                <Grid>
-                                    <Canvas Width="0" Height="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                        <Rectangle Fill="{x:Null}" Name="OpaqueRect" Width="Auto" Height="Auto" />
-                                    </Canvas>
-                                    <Rectangle RadiusX="2" RadiusY="2" Fill="#FFF1F1F1" Width="28" Margin="1,2,1,2" HorizontalAlignment="Left" />
-                                    <Rectangle Fill="#FFE2E3E3" Width="1" Margin="29,2,0,2" HorizontalAlignment="Left" />
-                                    <Rectangle Fill="#FFFFFFFF" Width="1" Margin="30,2,0,2" HorizontalAlignment="Left" />
-                                    <ItemsPresenter Name="ItemsPresenter" Margin="{TemplateBinding Control.Padding}" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" KeyboardNavigation.DirectionalNavigation="Cycle" />
-                                </Grid>
-                            </ScrollViewer>
-                        </Border>
-                    </mwt:SystemDropShadowChrome>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="ContextMenuService.HasDropShadow">
-                            <Setter Property="FrameworkElement.Margin" TargetName="Shdw">
-                                <Setter.Value>
-                                    <Thickness>0,0,5,5</Thickness>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="mwt:SystemDropShadowChrome.Color" TargetName="Shdw">
-                                <Setter.Value>
-                                    <Color>#71000000</Color>
-                                </Setter.Value>
-                            </Setter>
-                            <Trigger.Value>
-                                <s:Boolean>True</s:Boolean>
-                            </Trigger.Value>
-                        </Trigger>
-                        <Trigger Property="ScrollViewer.CanContentScroll" SourceName="ContextMenuScrollViewer">
-                            <Setter Property="Canvas.Top" TargetName="OpaqueRect">
-                                <Setter.Value>
-                                    <Binding Path="VerticalOffset" ElementName="ContextMenuScrollViewer" />
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="Canvas.Left" TargetName="OpaqueRect">
-                                <Setter.Value>
-                                    <Binding Path="HorizontalOffset" ElementName="ContextMenuScrollViewer" />
-                                </Setter.Value>
-                            </Setter>
-                            <Trigger.Value>
-                                <s:Boolean>False</s:Boolean>
-                            </Trigger.Value>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
