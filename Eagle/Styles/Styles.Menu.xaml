@@ -5,7 +5,7 @@
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <SolidColorBrush x:Key="ContextMenuBackground" Color="#FFF5F5F5" />
+    <SolidColorBrush x:Key="ContextMenuBackground" Color="#F5F5F1" />
     <ControlTemplate TargetType="MenuItem" x:Key="SubMenuHeaderTemplate">
         <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}" Name="templateRoot" SnapsToDevicePixels="True">
             <Grid Margin="-1,-1,-1,-1">
@@ -266,10 +266,6 @@
         </Setter>
         <Setter Property="Control.Template"
             Value="{StaticResource SubMenuItemTemplate}" />
-            <!--<Setter.Value>
-                <DynamicResource ResourceKey="{ComponentResourceKey TypeInTargetAssembly=MenuItem, ResourceId=SubmenuItemTemplateKey}" />
-            </Setter.Value>
-        </Setter>-->
         <Style.Triggers>
             <Trigger Property="MenuItem.Role">
                 <Setter Property="Control.Template">
@@ -303,11 +299,6 @@
             </Trigger>
             <Trigger Property="MenuItem.Role">
                 <Setter Property="Template" Value="{StaticResource SubMenuHeaderTemplate}" />
-                <!--<Setter Property="Template">
-                    <Setter.Value>
-                        <DynamicResource ResourceKey="{ComponentResourceKey TypeInTargetAssembly=MenuItem, ResourceId=SubmenuHeaderTemplateKey}" />
-                    </Setter.Value>
-                </Setter>-->
                 <Trigger.Value>
                     <x:Static Member="MenuItemRole.SubmenuHeader" />
                 </Trigger.Value>
@@ -316,8 +307,8 @@
     </Style>
 
     <Style TargetType="{x:Type ContextMenu}" x:Key="DataBoundContextMenuStyle">
+        <Setter Property="Background" Value="{StaticResource ContextMenuBackground}" />
         <Setter Property="ItemsSource" Value="{Binding ContextMenuItems}" />
-        <Setter Property="DisplayMemberPath" Value="Header" />
         <Setter Property="ItemContainerStyle" Value="{StaticResource DataBoundMenuItemStyle}" />
         <Setter Property="ItemTemplate">
             <Setter.Value>

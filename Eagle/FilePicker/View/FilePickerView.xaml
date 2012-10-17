@@ -9,7 +9,7 @@
              d:DesignHeight="342" d:DesignWidth="197"
              d:DataContext="{Binding Main.FilePicker, Source={StaticResource Locator}}">
     <UserControl.ContextMenu>
-        <ContextMenu ItemsSource="{Binding ContextMenuItems}" DisplayMemberPath="Header">
+        <ContextMenu ItemsSource="{Binding ContextMenuItems}">
             <ContextMenu.ItemContainerStyle>
                 <Style TargetType="MenuItem">
                     <Setter Property="Command" Value="{Binding Command}" />
