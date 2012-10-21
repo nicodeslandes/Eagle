@@ -5,13 +5,15 @@
     xmlns:local="clr-namespace:Eagle"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <Application.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Styles/Styles.Menu.xaml" />
-      </ResourceDictionary.MergedDictionaries>
-      <cv:VisibilityConverter x:Key="VisibilityConverter" />
-      <local:MefBootstrapper x:Key="bootstrapper" />
-    </ResourceDictionary>
-  </Application.Resources>
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Styles.Menu.xaml" />
+                <ResourceDictionary>
+                    <cv:VisibilityConverter x:Key="VisibilityConverter" />
+                    <local:MefBootstrapper x:Key="bootstrapper" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>

@@ -19,7 +19,6 @@ namespace Eagle
         public App()
         {
             this.InitializeComponent();
-            var b = this.Resources["bootstrapper"];
         }
     }
 }
