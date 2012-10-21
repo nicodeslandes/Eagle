@@ -4,3 +4,5 @@ obj
 *.suo
 DirectX.huge.log
 _ReSharper.*
+new.log
+testOut.txt

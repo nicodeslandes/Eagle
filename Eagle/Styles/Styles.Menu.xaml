@@ -5,7 +5,7 @@
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <SolidColorBrush x:Key="ContextMenuBackground" Color="#F5F5F1" />
+    <SolidColorBrush x:Key="ContextMenuBackground" Color="#FFFEFC" />
     <ControlTemplate TargetType="MenuItem" x:Key="SubMenuHeaderTemplate">
         <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}" Name="templateRoot" SnapsToDevicePixels="True">
             <Grid Margin="-1,-1,-1,-1">
