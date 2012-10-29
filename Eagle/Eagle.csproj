@@ -14,6 +14,10 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <ExpressionBlendVersion>5.2.30810.0</ExpressionBlendVersion>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -44,13 +48,17 @@
   <ItemGroup>
     <Reference Include="Caliburn.Micro, Version=1.3.1.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External Sources\Caliburn.Micro\src\bin\WPF\Debug\Caliburn.Micro.dll</HintPath>
+      <HintPath>..\packages\Caliburn.Micro.1.3.1\lib\net40\Caliburn.Micro.dll</HintPath>
     </Reference>
-    <Reference Include="Caliburn.Micro.Logging">
+    <Reference Include="Caliburn.Micro.DesignTimeSupport.WPF">
+      <HintPath>..\lib\Caliburn.DesignTimeSupport\Caliburn.Micro.DesignTimeSupport.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Caliburn.Micro.Logging, Version=1.3.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Caliburn.Micro.Logging.1.3.0\lib\net40\Caliburn.Micro.Logging.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Caliburn.Micro.Logging.NLog">
+    <Reference Include="Caliburn.Micro.Logging.NLog, Version=1.3.0.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Caliburn.Micro.Logging.NLog.1.3.0\lib\net40\Caliburn.Micro.Logging.NLog.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
@@ -58,7 +66,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.ComponentModel.Composition.Registration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Caliburn.Micro.1.3.1\lib\net40\System.Windows.Interactivity.dll</HintPath>
@@ -80,15 +87,37 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FilePicker\ViewModels\DelegateCommand.cs" />
+    <Compile Include="FilePicker\ViewModels\FilePickerItemBase.cs" />
+    <Compile Include="Common\ViewModels\Property.cs" />
+    <Compile Include="FilePicker\ViewModels\FolderViewModel.cs" />
+    <Compile Include="FilePicker\ViewModels\RecentItemsFolderViewModel.cs" />
+    <Compile Include="FilePicker\ViewModels\IFilePickerItem.cs" />
+    <Compile Include="FilePicker\ViewModels\FileLocation.cs" />
+    <Compile Include="FilePicker\Views\FileLocationView.xaml.cs">
+      <DependentUpon>FileLocationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FilePicker\Views\RecentItemsFolderView.xaml.cs">
+      <DependentUpon>RecentItemsFolderView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="IShell.cs" />
+    <Compile Include="MefBootstrapper.cs" />
+    <Compile Include="Views\ShellView.xaml.cs">
+      <DependentUpon>ShellView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="FilePicker\Views\FileLocationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FilePicker\Views\FilePickerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Styles\Styles.Menu.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="FilePicker\Views\RecentItemsFolderView.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ShellView.xaml">
+    <Page Include="Styles\Styles.Menu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -98,24 +127,21 @@
     </Compile>
     <Compile Include="Behaviors\ScrollToEndBehavior.cs" />
     <Compile Include="Behaviors\SelectOnPreviewMouseClickBehavior.cs" />
-    <Compile Include="FilePicker\ViewModels\DelegateCommand.cs" />
     <Compile Include="FilePicker\ViewModels\FileLocationViewModel.cs" />
     <Compile Include="FilePicker\ViewModels\FilePickerViewModel.cs" />
-    <Compile Include="FilePicker\ViewModels\MenuItemViewModel.cs" />
+    <Compile Include="Common\ViewModels\MenuItemViewModel.cs" />
     <Compile Include="FilePicker\Views\FilePickerView.xaml.cs">
       <DependentUpon>FilePickerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IShell.cs" />
-    <Compile Include="MefBootstrapper.cs" />
     <Compile Include="ViewModels\LineViewModel.cs" />
     <Compile Include="ViewModels\FileViewModel.cs" />
-    <Compile Include="ViewModels\ObservableCollectionEx.cs" />
+    <Compile Include="Common\ViewModels\ObservableCollectionEx.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
-    <Compile Include="Views\ShellView.xaml.cs">
-      <DependentUpon>ShellView.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <Page Include="Views\ShellView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -3,13 +3,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="clr-namespace:Eagle.ViewModels"
     xmlns:b="clr-namespace:Eagle.Behaviors"
-    xmlns:fp="clr-namespace:Eagle.FilePicker.Views"
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+    xmlns:dts="clr-namespace:Caliburn.Micro.DesignTimeSupport;assembly=Caliburn.Micro.DesignTimeSupport.WPF"
     x:Class="Eagle.Views.ShellView"
     Title="Eagle"
     d:DataContext="{d:DesignInstance vm:ShellViewModel, IsDesignTimeCreatable=true}"
+    dts:DesignTime.Enable="True"
     Width="800" Height="800"> <!--DataContext="{Binding Main, Source={StaticResource Locator}}"-->
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}" />
@@ -51,7 +52,7 @@
             <Label Content="Current File: " />
             <TextBox Text="{Binding File.FileName}" VerticalAlignment="Center" IsReadOnly="True" Background="Transparent" BorderThickness="0"/>
         </DockPanel>
-        <fp:FilePickerView Grid.Row="2" DataContext="{Binding FilePicker}" />
+        <ContentControl Grid.Row="2" x:Name="FilePicker" />
         <GridSplitter Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" />
         <ListBox SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1"
             Grid.Row="2" Grid.Column="2"

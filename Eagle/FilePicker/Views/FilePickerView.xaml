@@ -6,32 +6,29 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
              xmlns:b="clr-namespace:Eagle.Behaviors"
              xmlns:vm="clr-namespace:Eagle.FilePicker.ViewModels"
-             d:DesignHeight="342" d:DesignWidth="197"
-             d:DataContext="{d:DesignInstance vm:FilePickerViewModel, IsDesignTimeCreatable=true}">
+             xmlns:dts="clr-namespace:Caliburn.Micro.DesignTimeSupport;assembly=Caliburn.Micro.DesignTimeSupport.WPF"
+             xmlns:cal="http://www.caliburnproject.org"
+             d:DesignHeight="342" d:DesignWidth="497"
+             d:DataContext="{d:DesignInstance vm:FilePickerViewModel, IsDesignTimeCreatable=True}"
+             dts:DesignTime.Enable="True">
     <UserControl.ContextMenu>
-        <ContextMenu ItemsSource="{Binding ContextMenuItems}">
-            <ContextMenu.ItemContainerStyle>
-                <Style TargetType="MenuItem">
-                    <Setter Property="Command" Value="{Binding Command}" />
-                </Style>
-            </ContextMenu.ItemContainerStyle>
-        </ContextMenu>
+        <ContextMenu Style="{StaticResource DataBoundContextMenuStyle}" />
     </UserControl.ContextMenu>
-    <TreeView Grid.Row="2" Grid.Column="0" ItemsSource="{Binding Locations}" Margin="0,-1,0,1" BorderThickness="0" MouseDoubleClick="TreeView_MouseDoubleClick_1">
+    <TreeView Grid.Row="2" Grid.Column="0" Margin="0,-1,0,1" BorderThickness="0" MouseDoubleClick="TreeView_MouseDoubleClick_1" x:Name="Items">
         <TreeView.ItemContainerStyle>
             <Style TargetType="TreeViewItem">
                 <Setter Property="IsExpanded" Value="True" />
                 <Setter Property="ContextMenu">
                     <Setter.Value>
-                        <ContextMenu Style="{StaticResource DataBoundContextMenuStyle}" StaysOpen="True" />
+                        <ContextMenu Style="{StaticResource DataBoundContextMenuStyle}" />
                     </Setter.Value>
                 </Setter>
                 <Setter Property="b:SelectOnPreviewMouseClickBehavior.Enabled" Value="True" />
             </Style>
         </TreeView.ItemContainerStyle>
         <TreeView.ItemTemplate>
-            <HierarchicalDataTemplate ItemsSource="{Binding SubLocations}">
-                <TextBlock Text="{Binding Name}" Padding="2" />
+            <HierarchicalDataTemplate ItemsSource="{Binding ChildItems}" >
+                <ContentControl cal:View.Model="{Binding}" />
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>
     </TreeView>

@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using Caliburn.Micro.Logging.NLog;
+using Eagle.FilePicker.ViewModels;
 using Eagle.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Eagle
     public class MefBootstrapper : Bootstrapper<IShell>
     {
         private CompositionContainer container;
-
+        
         static MefBootstrapper()
         {
             LogManager.GetLog = type => new NLogLogger(type);
@@ -52,6 +53,34 @@ namespace Eagle
         protected override void BuildUp(object instance)
         {
             container.SatisfyImportsOnce(instance);
+        }
+
+        protected override void StartDesignTime()
+        {
+            base.StartDesignTime();
+
+            base.Configure();
+
+            AssemblySource.Instance.Clear();
+            AssemblySource.Instance.AddRange(new[] { typeof(App).Assembly });
+
+            var originalLocateTypeForModelType = ViewLocator.LocateTypeForModelType;
+            Func<Type, bool> isDesignTimeType = type => type.Assembly.IsDynamic;
+            ViewLocator.LocateTypeForModelType = (modelType, displayLocation, context) =>
+            {
+                var type = originalLocateTypeForModelType(modelType, displayLocation, context);
+                if (type == null && isDesignTimeType(modelType))
+                {
+                    if (modelType.Name == "RecentItemsFolderViewModel")
+                    {
+                        type = typeof(RecentItemsFolderViewModel);
+                    }
+                }
+                return type;
+            };
+
+            IoC.GetInstance = base.GetInstance;
+            IoC.GetAllInstances = base.GetAllInstances;
         }
     }
 }

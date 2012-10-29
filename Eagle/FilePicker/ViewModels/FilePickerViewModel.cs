@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Eagle.Common.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,22 +16,26 @@ namespace Eagle.FilePicker.ViewModels
         /// </summary>
         public FilePickerViewModel()
         {
-            this.Locations = new ObservableCollection<FileLocationViewModel>();
+            this.Items = new ObservableCollection<IFilePickerItem>();
             this.AddLocationCommand = new DelegateCommand(this.AddLocation);
             this.ContextMenuItems = new ObservableCollection<MenuItemViewModel>
             {
-                new MenuItemViewModel("Add root location", this.AddLocationCommand)
+                new MenuItemViewModel("Add Folder", this.AddLocationCommand)
             };
 
             if (Execute.InDesignMode)
             {
-                this.Locations.Add(new FileLocationViewModel("Documents") { SubLocations = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
-                this.Locations.Add(new FileLocationViewModel("Projects"));
-                this.Locations.Add(new FileLocationViewModel("Logs"));
+                //this.Items.Add(new FileLocationViewModel("Documents") { SubLocations = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
+                //this.Items.Add(new FileLocationViewModel("Projects"));
+                //this.Items.Add(new FileLocationViewModel("Logs"));
             }
+
+            this.Items.Add(new RecentItemsFolderViewModel() { ChildItems = { new FileLocationViewModel(@"\\LONS00108577\DATA\Cortex\Test.log") } });
+
+            new FilePickerItemBase().Name = "Hello";
         }
 
-        public ObservableCollection<FileLocationViewModel> Locations { get; private set; }
+        public ObservableCollection<IFilePickerItem> Items { get; private set; }
 
         public ObservableCollection<MenuItemViewModel> ContextMenuItems { get; private set; }
 

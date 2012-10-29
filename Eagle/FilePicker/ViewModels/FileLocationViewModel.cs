@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Collections.ObjectModel;
 using Caliburn.Micro;
+using Eagle.Common.ViewModel;
 
 namespace Eagle.FilePicker.ViewModels
 {
-    public class FileLocationViewModel : PropertyChangedBase
+    public class FileLocationViewModel : FilePickerItemBase
     {
-        public FileLocationViewModel(string name)
+#if DEBUG
+        public FileLocationViewModel() : this(@"\\Server\Path\Folder\File.log")
         {
-            this.Name = name;
+        }
+
+#endif
+        public FileLocationViewModel(string name) : base(name)
+        {
             this.SubLocations = new ObservableCollection<FileLocationViewModel>();
             this.ContextMenuItems = new ObservableCollection<MenuItemViewModel>()
             {
@@ -34,24 +40,6 @@ namespace Eagle.FilePicker.ViewModels
                         new MenuItemViewModel("Test1", new DelegateCommand(this.AddChild)),
                         new MenuItemViewModel("Test1", new DelegateCommand(this.AddChild))))
             };
-        }
-
-        private string _name;
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-
-            private set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    this.NotifyOfPropertyChange(() => this.Name);
-                }
-            }
         }
 
         public ObservableCollection<FileLocationViewModel> SubLocations { get; private set; }

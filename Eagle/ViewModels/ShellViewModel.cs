@@ -44,9 +44,9 @@ namespace Eagle.ViewModels
             }
             else
             {
-                this.FilePicker.Locations.Add(new FileLocationViewModel("Documents") { SubLocations = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
-                this.FilePicker.Locations.Add(new FileLocationViewModel("Projects"));
-                this.FilePicker.Locations.Add(new FileLocationViewModel("Logs"));
+                //this.FilePicker.Items.Add(new FileLocationViewModel("Documents") { SubLocations = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
+                //this.FilePicker.Items.Add(new FileLocationViewModel("Projects"));
+                //this.FilePicker.Items.Add(new FileLocationViewModel("Logs"));
             }
         }
 
