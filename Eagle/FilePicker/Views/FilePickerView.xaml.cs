@@ -18,21 +18,5 @@ namespace Eagle.FilePicker.Views
         {
             InitializeComponent();
         }
-
-        private void TreeView_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
-        {
-            // We want our xaml of be properly indented, ohterwise
-            // we would not be able to indent them.
-            XmlWriterSettings xmlSettings = new XmlWriterSettings();
-            xmlSettings.Indent = true;
-
-            // Make the string builder
-            StringBuilder sb = new StringBuilder();
-            XmlWriter writer = XmlWriter.Create(sb, xmlSettings);
-            System.Windows.Markup.XamlWriter.Save(App.Current.FindResource(new ComponentResourceKey(typeof(MenuItem), "SubmenuHeaderTemplateKey")), writer);
-            MessageBox.Show(sb.ToString());
-            //this.DataContext = sb.ToString();
-            Clipboard.SetText(sb.ToString());
-        }
     }
 }

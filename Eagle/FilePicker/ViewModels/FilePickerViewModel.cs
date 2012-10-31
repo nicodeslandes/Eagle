@@ -1,11 +1,8 @@
-﻿using Caliburn.Micro;
-using Eagle.Common.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
+using Caliburn.Micro;
+using Eagle.Common.ViewModel;
 
 namespace Eagle.FilePicker.ViewModels
 {
@@ -25,9 +22,9 @@ namespace Eagle.FilePicker.ViewModels
 
             if (Execute.InDesignMode)
             {
-                //this.Items.Add(new FileLocationViewModel("Documents") { SubLocations = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
-                //this.Items.Add(new FileLocationViewModel("Projects"));
-                //this.Items.Add(new FileLocationViewModel("Logs"));
+                ////this.Items.Add(new FileLocationViewModel("Documents") { SubLocations = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
+                ////this.Items.Add(new FileLocationViewModel("Projects"));
+                ////this.Items.Add(new FileLocationViewModel("Logs"));
             }
 
             this.Items.Add(new RecentItemsFolderViewModel() { ChildItems = { new FileLocationViewModel(@"\\LONS00108577\DATA\Cortex\Test.log") } });

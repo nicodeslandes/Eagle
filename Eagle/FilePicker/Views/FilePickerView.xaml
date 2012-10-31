@@ -2,7 +2,6 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
              xmlns:b="clr-namespace:Eagle.Behaviors"
              xmlns:vm="clr-namespace:Eagle.FilePicker.ViewModels"
@@ -14,7 +13,7 @@
     <UserControl.ContextMenu>
         <ContextMenu Style="{StaticResource DataBoundContextMenuStyle}" />
     </UserControl.ContextMenu>
-    <TreeView Grid.Row="2" Grid.Column="0" Margin="0,-1,0,1" BorderThickness="0" MouseDoubleClick="TreeView_MouseDoubleClick_1" x:Name="Items">
+    <TreeView Grid.Row="2" Grid.Column="0" Margin="0,-1,0,1" BorderThickness="0" x:Name="Items">
         <TreeView.ItemContainerStyle>
             <Style TargetType="TreeViewItem">
                 <Setter Property="IsExpanded" Value="True" />
@@ -27,7 +26,7 @@
             </Style>
         </TreeView.ItemContainerStyle>
         <TreeView.ItemTemplate>
-            <HierarchicalDataTemplate ItemsSource="{Binding ChildItems}" >
+            <HierarchicalDataTemplate ItemsSource="{Binding ChildItems}" DataType="vm:IFilePickerItem">
                 <ContentControl cal:View.Model="{Binding}" />
             </HierarchicalDataTemplate>
         </TreeView.ItemTemplate>

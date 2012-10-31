@@ -4,6 +4,8 @@ using System;
 
 namespace Eagle.FilePicker.ViewModels
 {
+    using System.Collections.ObjectModel;
+
     public class FilePickerItemBase : PropertyChangedBase, IFilePickerItem
     {
         private static readonly string NameProperty = Property.Name<FilePickerItemBase>(vm => vm.Name);
@@ -11,6 +13,7 @@ namespace Eagle.FilePicker.ViewModels
         public FilePickerItemBase(string name = null)
         {
             _name = name;
+            this.ChildItems = new ObservableCollection<IFilePickerItem>();
         }
 
         private string _name;
@@ -25,5 +28,7 @@ namespace Eagle.FilePicker.ViewModels
                 this.NotifyOfPropertyChange(NameProperty);
             }
         }
+
+        public ObservableCollection<IFilePickerItem> ChildItems { get; private set; }
     }
 }
