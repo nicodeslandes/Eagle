@@ -5,15 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
              xmlns:b="clr-namespace:Eagle.Behaviors"
              xmlns:vm="clr-namespace:Eagle.FilePicker.ViewModels"
-             xmlns:dts="clr-namespace:Caliburn.Micro.DesignTimeSupport;assembly=Caliburn.Micro.DesignTimeSupport.WPF"
              xmlns:cal="http://www.caliburnproject.org"
              d:DesignHeight="342" d:DesignWidth="497"
              d:DataContext="{d:DesignInstance vm:FilePickerViewModel, IsDesignTimeCreatable=True}"
-             dts:DesignTime.Enable="True">
+             cal:Bind.AtDesignTime="True">
     <UserControl.ContextMenu>
         <ContextMenu Style="{StaticResource DataBoundContextMenuStyle}" />
     </UserControl.ContextMenu>
-    <TreeView Grid.Row="2" Grid.Column="0" Margin="0,-1,0,1" BorderThickness="0" x:Name="Items">
+    <TreeView Grid.Row="2" Grid.Column="0" BorderThickness="0" x:Name="Items">
         <TreeView.ItemContainerStyle>
             <Style TargetType="TreeViewItem">
                 <Setter Property="IsExpanded" Value="True" />

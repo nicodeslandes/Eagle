@@ -20,14 +20,14 @@ namespace Eagle.FilePicker.ViewModels
                 new MenuItemViewModel("Add Folder", this.AddLocationCommand)
             };
 
-            if (Execute.InDesignMode)
-            {
-                ////this.Items.Add(new FileLocationViewModel("Documents") { SubLocations = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
-                ////this.Items.Add(new FileLocationViewModel("Projects"));
-                ////this.Items.Add(new FileLocationViewModel("Logs"));
-            }
-
             this.Items.Add(new RecentItemsFolderViewModel() { ChildItems = { new FileLocationViewModel(@"\\LONS00108577\DATA\Cortex\Test.log") } });
+
+            if (Execute.InDesignMode || true)
+            {
+                this.Items.Add(new FolderViewModel("Documents") { ChildItems = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
+                this.Items.Add(new FolderViewModel("Projects"));
+                this.Items.Add(new FolderViewModel("Logs"));
+            }
 
             new FilePickerItemBase().Name = "Hello";
         }

@@ -6,14 +6,11 @@
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:dts="clr-namespace:Caliburn.Micro.DesignTimeSupport;assembly=Caliburn.Micro.DesignTimeSupport.WPF"
     xmlns:cal="http://www.caliburnproject.org" mc:Ignorable="d"
     x:Class="Eagle.Views.ShellView"
     Title="Eagle"
     d:DataContext="{d:DesignInstance {x:Type vm:ShellViewModel}, IsDesignTimeCreatable=true}"
-    dts:DesignTime.Enable="True"
-    Width="800" Height="800">
-    <!--DataContext="{Binding Main, Source={StaticResource Locator}}"-->
+    Width="800" Height="800" cal:Bind.AtDesignTime="True">
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}" />
         <KeyBinding Key="F5" Modifiers="Control" Command="{Binding RefreshFileCommand}" />

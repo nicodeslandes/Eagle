@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System;
+using Caliburn.Micro;
 
 namespace Eagle.FilePicker.ViewModels
 {
@@ -13,6 +14,10 @@ namespace Eagle.FilePicker.ViewModels
         public FolderViewModel()
             : this(null)
         {
+            if (Execute.InDesignMode)
+            {
+                this.Name = "Custom Folder";
+            }
         }
     }
 }
