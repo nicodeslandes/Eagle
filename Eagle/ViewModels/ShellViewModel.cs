@@ -24,7 +24,8 @@ namespace Eagle.ViewModels
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public ShellViewModel()
+        [ImportingConstructor]
+        public ShellViewModel(FilePickerViewModel filePicker)
         {
             this.OpenCommand = new DelegateCommand(this.Open);
             this.ReloadCommand = new DelegateCommand(this.Reload, () => this.File != null);
@@ -32,7 +33,7 @@ namespace Eagle.ViewModels
             this.ClearCommand = new DelegateCommand(this.Clear, () => this.File != null);
             this.CloseCommand = new DelegateCommand(this.Close, () => this.File != null);
 
-            this.FilePicker = new FilePickerViewModel();
+            this.FilePicker = filePicker;
             this.DisplayName = "Eagle";
 
             this.FollowTail = true;

@@ -1,8 +1,9 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+
 namespace Eagle.FilePicker.ViewModels
 {
-    using System.Collections.ObjectModel;
-
-    public interface IFilePickerItem
+    public interface IFilePickerItem : INotifyPropertyChanged
     {
         string Name { get; set; }
 

@@ -6,28 +6,42 @@
              xmlns:b="clr-namespace:Eagle.Behaviors"
              xmlns:vm="clr-namespace:Eagle.FilePicker.ViewModels"
              xmlns:cal="http://www.caliburnproject.org"
-             d:DesignHeight="342" d:DesignWidth="497"
+             d:DesignHeight="590.279" d:DesignWidth="325.178"
              d:DataContext="{d:DesignInstance vm:FilePickerViewModel, IsDesignTimeCreatable=True}"
              cal:Bind.AtDesignTime="True">
     <UserControl.ContextMenu>
         <ContextMenu Style="{StaticResource DataBoundContextMenuStyle}" />
     </UserControl.ContextMenu>
-    <TreeView Grid.Row="2" Grid.Column="0" BorderThickness="0" x:Name="Items">
-        <TreeView.ItemContainerStyle>
-            <Style TargetType="TreeViewItem">
-                <Setter Property="IsExpanded" Value="True" />
-                <Setter Property="ContextMenu">
-                    <Setter.Value>
-                        <ContextMenu Style="{StaticResource DataBoundContextMenuStyle}" />
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="b:SelectOnPreviewMouseClickBehavior.Enabled" Value="True" />
-            </Style>
-        </TreeView.ItemContainerStyle>
-        <TreeView.ItemTemplate>
-            <HierarchicalDataTemplate ItemsSource="{Binding ChildItems}" DataType="vm:IFilePickerItem">
-                <ContentControl cal:View.Model="{Binding}" />
-            </HierarchicalDataTemplate>
-        </TreeView.ItemTemplate>
-    </TreeView>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="3"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TreeView BorderThickness="0" x:Name="Items" SelectedItemChanged="Items_SelectedItemChanged">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="True" />
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu Style="{StaticResource DataBoundContextMenuStyle}" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="b:SelectOnPreviewMouseClickBehavior.Enabled" Value="True" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding ChildItems}" DataType="vm:IFilePickerItem">
+                    <ContentControl cal:View.Model="{Binding}" />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+        <GridSplitter Grid.Row="1" />
+        <DataGrid Grid.Row="2" AutoGenerateColumns="False" ItemsSource="{Binding ElementName=Items, Path=SelectedItem.Properties}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Property" Binding="{Binding Name}" />
+                <DataGridTextColumn Header="Value" Binding="{Binding Name}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </UserControl>

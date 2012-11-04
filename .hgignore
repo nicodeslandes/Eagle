@@ -6,3 +6,5 @@ DirectX.huge.log
 _ReSharper.*
 BuildProcessTemplates/
 $tf/
+Drops
+TestResults

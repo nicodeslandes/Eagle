@@ -35,7 +35,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -103,6 +103,10 @@
     <Compile Include="FilePicker\ViewModels\FilePickerItemBase.cs" />
     <Compile Include="Common\ViewModels\Property.cs" />
     <Compile Include="FilePicker\ViewModels\FolderViewModel.cs" />
+    <Compile Include="FilePicker\ViewModels\IObjectPropertiesProvider.cs" />
+    <Compile Include="FilePicker\ViewModels\ObjectPropertiesProvider.cs" />
+    <Compile Include="FilePicker\ViewModels\PropertyCollection.cs" />
+    <Compile Include="FilePicker\ViewModels\PropertyValue.cs" />
     <Compile Include="FilePicker\ViewModels\RecentItemsFolderViewModel.cs" />
     <Compile Include="FilePicker\ViewModels\IFilePickerItem.cs" />
     <Compile Include="FilePicker\ViewModels\FileLocation.cs" />
@@ -156,7 +160,6 @@
     <Compile Include="ViewModels\FileViewModel.cs" />
     <Compile Include="Common\ViewModels\ObservableCollectionEx.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
-    <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Page Include="Views\ShellView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

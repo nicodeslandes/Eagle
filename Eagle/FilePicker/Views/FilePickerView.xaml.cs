@@ -18,5 +18,10 @@ namespace Eagle.FilePicker.Views
         {
             InitializeComponent();
         }
+
+        private void Items_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+
+        }
     }
 }
