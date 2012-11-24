@@ -3,6 +3,7 @@ using Eagle.FilePicker.ViewModels;
 using Microsoft.Win32;
 using System.ComponentModel.Composition;
 using System.Text;
+using System;
 
 namespace Eagle.ViewModels
 {
@@ -21,19 +22,27 @@ namespace Eagle.ViewModels
     [Export(typeof(IShell))]
     public class ShellViewModel : Screen, IShell
     {
+        private readonly IFileManager _fileManager;
+        private bool _showLineNumbers = false;
+        private bool _followTail;
+        private bool _isFileOpen = false;
+        private FileViewModel _file;
+
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         [ImportingConstructor]
-        public ShellViewModel(FilePickerViewModel filePicker)
+        public ShellViewModel(IFileManagerEventSource fileManagerEventSource, IFileManager fileManager)
         {
+            fileManagerEventSource.OpenFileEventStream.Subscribe(this.OpenFile);
+            _fileManager = fileManager;
+
             this.OpenCommand = new DelegateCommand(this.Open);
             this.ReloadCommand = new DelegateCommand(this.Reload, () => this.File != null);
             this.RefreshFileCommand = new DelegateCommand(this.RefreshFile, () => this.File != null);
             this.ClearCommand = new DelegateCommand(this.Clear, () => this.File != null);
             this.CloseCommand = new DelegateCommand(this.Close, () => this.File != null);
 
-            this.FilePicker = filePicker;
             this.DisplayName = "Eagle";
 
             this.FollowTail = true;
@@ -50,12 +59,7 @@ namespace Eagle.ViewModels
                 //this.FilePicker.Items.Add(new FileLocationViewModel("Logs"));
             }
         }
-
-        private bool _showLineNumbers = false;
-        private bool _followTail;
-        private bool _isFileOpen = false;
-        private FileViewModel _file;
-
+        
         public bool IsFileOpen
         {
             get
@@ -88,6 +92,7 @@ namespace Eagle.ViewModels
             }
         }
 
+        [Import]
         public FilePickerViewModel FilePicker { get; private set; }
 
         public DelegateCommand OpenCommand { get; private set; }
@@ -134,14 +139,19 @@ namespace Eagle.ViewModels
             }
         }
 
+        public void OpenFile(string fileName)
+        {
+            this.File = new FileViewModel(fileName, Encoding.UTF8);
+            this.IsFileOpen = true;
+            this.File.LoadFileContent();
+        }
+
         private void Open()
         {
             var dialog = new OpenFileDialog();
             if (dialog.ShowDialog() == true)
             {
-                this.File = new FileViewModel(dialog.FileName, Encoding.UTF8);
-                this.IsFileOpen = true;
-                this.File.LoadFileContent();
+                _fileManager.OpenFile(dialog.FileName);
             }
         }
 

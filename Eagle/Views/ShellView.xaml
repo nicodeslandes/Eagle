@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
-            <ColumnDefinition Width="3" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <ToolBarTray VerticalAlignment="Top" Grid.ColumnSpan="3">
@@ -52,13 +52,13 @@
             <TextBox Text="{Binding File.FileName}" VerticalAlignment="Center" IsReadOnly="True" Background="Transparent" BorderThickness="0"/>
         </DockPanel>
         <ContentControl Grid.Row="2" x:Name="FilePicker" />
-        <GridSplitter Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" />
+        <GridSplitter Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Background="{DynamicResource GridSplitterBrush}" Width="{DynamicResource ShellGridSplitterWidth}" />
         <ListBox SnapsToDevicePixels="True" UseLayoutRounding="True" BorderThickness="1"
             Grid.Row="2" Grid.Column="2"
             ItemsSource="{Binding File.Lines}" 
             FontFamily="Courier New" 
             Visibility="{Binding IsFileOpen, Converter={StaticResource VisibilityConverter}}"
-            ScrollViewer.HorizontalScrollBarVisibility="Auto" TextOptions.TextFormattingMode="Display">
+            ScrollViewer.HorizontalScrollBarVisibility="Auto" TextOptions.TextFormattingMode="Display" BorderBrush="{DynamicResource PaneBorderBrush}">
             <i:Interaction.Behaviors>
                 <b:ScrollToEndBehavior ScrollToEndOnNewItems="{Binding FollowTail}" />
             </i:Interaction.Behaviors>

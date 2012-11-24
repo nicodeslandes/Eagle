@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Eagle.FilePicker.ViewModels;
 using Moq;
+using Eagle.ViewModels;
 
 namespace Eagle.Test.FilePicker
 {
@@ -9,10 +10,13 @@ namespace Eagle.Test.FilePicker
     public class FilePickerViewModelTests
     {
         private Mock<IObjectPropertiesProvider> _objectPropertyProvider;
+        private Mock<IFileManager> _fileManager;
+
         [SetUp]
-        void Setup()
+        public void Setup()
         {
             _objectPropertyProvider = new Mock<IObjectPropertiesProvider>();
+            _fileManager = new Mock<IFileManager>();
         }
 
         [Test]
@@ -20,7 +24,7 @@ namespace Eagle.Test.FilePicker
         {
             var vm = CreateViewModel();
             Assert.IsNotNull(vm.Items);
-            Assert.AreEqual(4, vm.Items.Count);
+            Assert.AreEqual(1, vm.Items.Count);
         }
 
         [Test]
@@ -34,7 +38,7 @@ namespace Eagle.Test.FilePicker
 
         private FilePickerViewModel CreateViewModel()
         {
-            return new FilePickerViewModel(_objectPropertyProvider.Object);
+            return new FilePickerViewModel(_objectPropertyProvider.Object, _fileManager.Object, null);
         }
     }
 }

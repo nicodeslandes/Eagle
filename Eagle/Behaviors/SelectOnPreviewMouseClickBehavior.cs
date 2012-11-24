@@ -12,8 +12,6 @@ namespace Eagle.Behaviors
 {
     public static class SelectOnPreviewMouseClickBehavior
     {
-
-
         public static bool GetEnabled(DependencyObject obj)
         {
             return (bool)obj.GetValue(EnabledProperty);

@@ -1,47 +1,76 @@
-﻿<UserControl x:Class="Eagle.FilePicker.Views.FilePickerView"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:b="clr-namespace:Eagle.Behaviors"
+             xmlns:cb="clr-namespace:Eagle.Common.Behaviors;assembly=Eagle.Common"
              xmlns:vm="clr-namespace:Eagle.FilePicker.ViewModels"
              xmlns:cal="http://www.caliburnproject.org"
-             d:DesignHeight="590.279" d:DesignWidth="325.178"
-             d:DataContext="{d:DesignInstance vm:FilePickerViewModel, IsDesignTimeCreatable=True}"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             x:Class="Eagle.FilePicker.Views.FilePickerView"
+             mc:Ignorable="d"
+             d:DesignHeight="590.279" d:DesignWidth="245.844"
+             d:DataContext="{d:DesignInstance {x:Type vm:FilePickerViewModel}, IsDesignTimeCreatable=True}"
              cal:Bind.AtDesignTime="True">
     <UserControl.ContextMenu>
         <ContextMenu Style="{StaticResource DataBoundContextMenuStyle}" />
     </UserControl.ContextMenu>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="3"/>
-            <RowDefinition />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TreeView BorderThickness="0" x:Name="Items" SelectedItemChanged="Items_SelectedItemChanged">
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="TreeViewItem">
-                    <Setter Property="IsExpanded" Value="True" />
-                    <Setter Property="ContextMenu">
-                        <Setter.Value>
-                            <ContextMenu Style="{StaticResource DataBoundContextMenuStyle}" />
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="b:SelectOnPreviewMouseClickBehavior.Enabled" Value="True" />
-                </Style>
-            </TreeView.ItemContainerStyle>
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding ChildItems}" DataType="vm:IFilePickerItem">
-                    <ContentControl cal:View.Model="{Binding}" />
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
-        <GridSplitter Grid.Row="1" />
-        <DataGrid Grid.Row="2" AutoGenerateColumns="False" ItemsSource="{Binding ElementName=Items, Path=SelectedItem.Properties}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Property" Binding="{Binding Name}" />
-                <DataGridTextColumn Header="Value" Binding="{Binding Name}" />
-            </DataGrid.Columns>
-        </DataGrid>
+        <HeaderedContentControl Header="Explorer" Style="{StaticResource FilePickerPaneStyle}">
+            <TreeView BorderThickness="0" x:Name="Items">
+                <i:Interaction.Behaviors>
+                    <cb:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
+                </i:Interaction.Behaviors>
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsExpanded" Value="True" />
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu Style="{StaticResource DataBoundContextMenuStyle}" />
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="b:SelectOnPreviewMouseClickBehavior.Enabled" Value="True" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding ChildItems}" DataType="vm:IFilePickerItem">
+                        <ContentControl cal:View.Model="{Binding}" >
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDoubleClick">
+                                    <cal:ActionMessage MethodName="InvokeItem" >
+                                        <cal:Parameter Value="{Binding}"/>
+                                    </cal:ActionMessage>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+
+                        </ContentControl>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </HeaderedContentControl>
+        <GridSplitter x:Name="gridSplitter" Grid.Row="1" HorizontalAlignment="Stretch" Background="{DynamicResource GridSplitterBrush}" Height="{DynamicResource ShellGridSplitterWidth}" Visibility="{Binding ShowItemProperties, Converter={StaticResource bool2VisibilityConverter}}" />
+        <HeaderedContentControl Grid.Row="2" Visibility="{Binding ShowItemProperties, Converter={StaticResource bool2VisibilityConverter}}" Header="Properties" Style="{DynamicResource FilePickerPaneStyle}">
+            <DataGrid DockPanel.Dock="Bottom" AutoGenerateColumns="False" ItemsSource="{Binding SelectedItemProperties.Items}" BorderThickness="0"
+        		HeadersVisibility="Row" RowStyle="{DynamicResource FilePickerItemPropertyDataGridRowStyle}"
+        		CellStyle="{DynamicResource FilePickerItemPropertiesDataGridCellStyle}"
+        		HorizontalGridLinesBrush="{DynamicResource FilePickerItemPropertiesHorizontalGridLineBrush}"
+        		RowHeaderStyle="{DynamicResource FilePickerItemPropertiesDataGridRowHeaderStyle}"
+        		GridLinesVisibility="Horizontal" AlternatingRowBackground="#FFFFFCE8" MinHeight="200">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="Auto" />
+                </DataGrid.Columns>
+                <DataGrid.RowHeaderTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding DataContext.PropertyName, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}, Mode=FindAncestor}}" />
+                    </DataTemplate>
+                </DataGrid.RowHeaderTemplate>
+            </DataGrid>
+        </HeaderedContentControl>
     </Grid>
 </UserControl>

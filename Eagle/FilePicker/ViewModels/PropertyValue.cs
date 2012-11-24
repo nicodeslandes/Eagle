@@ -1,7 +1,6 @@
 using Caliburn.Micro;
-using Eagle.Common.ViewModel;
+using Eagle.Common.ViewModels;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -9,6 +8,7 @@ namespace Eagle.FilePicker.ViewModels
 {
     public abstract class PropertyValue : PropertyChangedBase
     {
+        public abstract string PropertyName { get; }
     }
 
     public class PropertyValue<T> : PropertyValue
@@ -26,14 +26,25 @@ namespace Eagle.FilePicker.ViewModels
             _propertyName = property.Name;
 
             var getterMethodInfo = property.GetGetMethod();
-            var setterMethodInfo = property.GetGetMethod();
+            var setterMethodInfo = property.GetSetMethod();
             _propertyGetter = () => (T)getterMethodInfo.Invoke(_source, null);
             _propertySetter = value => setterMethodInfo.Invoke(_source, new object[] { value });
 
             source.PropertyChanged += (s, ea) => this.NotifyOfPropertyChange(ValueProperty);
         }
 
-        public string PropertyName
+        /// <summary>
+        /// Design-Time constructor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        public PropertyValue(string name, T value)
+        {
+            _propertyName = name;
+            _propertyGetter = () => value;
+        }
+
+        public override string PropertyName
         {
             get { return _propertyName; }
         }

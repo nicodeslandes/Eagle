@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Eagle
@@ -18,7 +16,10 @@ namespace Eagle
         /// </summary>
         public App()
         {
+            Debug.WriteLine("Calling App.InitializeComponents");
+            var start = Stopwatch.StartNew();
             this.InitializeComponent();
+            Debug.WriteLine("App.InitializeComponent: {0} ms", start.ElapsedMilliseconds);
         }
     }
 }

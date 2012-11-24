@@ -1,27 +1,19 @@
 ﻿using Caliburn.Micro;
-using Eagle.Common.ViewModel;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Reflection;
 
 namespace Eagle.FilePicker.ViewModels
 {
     public class PropertyCollection : PropertyChangedBase
     {
-        private static readonly string ItemsProperty = Property.Name<PropertyCollection>(vm => vm.Items);
-
-        private ObservableCollection<PropertyValue> _items;
-
-        public ObservableCollection<PropertyValue> Items
+        /// <summary>
+        /// Initializes a new instance of the PropertyCollection class.
+        /// </summary>
+        public PropertyCollection()
         {
-            get { return _items; }
-
-            set
-            {
-                _items = value;
-                this.NotifyOfPropertyChange(ItemsProperty);
-            }
+            this.Items = new ObservableCollection<PropertyValue>();
         }
+
+        public ObservableCollection<PropertyValue> Items {get; private set; }
     }
 }

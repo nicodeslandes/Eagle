@@ -1,6 +1,6 @@
 ﻿using Caliburn.Micro;
-using Eagle.Common.ViewModel;
 using System;
+using Eagle.Common.ViewModels;
 
 namespace Eagle.FilePicker.ViewModels
 {
@@ -9,6 +9,10 @@ namespace Eagle.FilePicker.ViewModels
     public class FilePickerItemBase : PropertyChangedBase, IFilePickerItem
     {
         private static readonly string NameProperty = Property.Name<FilePickerItemBase>(vm => vm.Name);
+
+        public virtual void Invoke()
+        {
+        }
 
         public FilePickerItemBase(string name = null)
         {
@@ -22,7 +26,7 @@ namespace Eagle.FilePicker.ViewModels
         {
             get { return _name; }
 
-            set
+            protected set
             {
                 _name = value;
                 this.NotifyOfPropertyChange(NameProperty);

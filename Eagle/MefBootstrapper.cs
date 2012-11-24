@@ -1,19 +1,14 @@
 ﻿using Caliburn.Micro;
-using Caliburn.Micro.Logging.NLog;
-using Eagle.FilePicker.ViewModels;
-using Eagle.ViewModels;
+using Eagle.FilePicker.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Eagle
 {
-    using System.IO;
-    using System.Reflection;
-    using Eagle.FilePicker.Views;
-
     public class MefBootstrapper : Bootstrapper<IShell>
     {
 #if LOG_DESIGN_TIME
@@ -23,7 +18,8 @@ namespace Eagle
         
         static MefBootstrapper()
         {
-            LogManager.GetLog = type => new NLogLogger(type);
+            Debug.WriteLine("MefBootstrapper cctor called");
+            //LogManager.GetLog = type => new NLogLogger(type);
         }
 
         protected override void Configure()
@@ -36,15 +32,17 @@ namespace Eagle
 
             batch.AddExportedValue<IWindowManager>(new WindowManager());
             batch.AddExportedValue<IEventAggregator>(new EventAggregator());
-            //batch.AddExportedValue(container);
 
             container.Compose(batch);
         }
 
         protected override object GetInstance(Type serviceType, string key)
         {
+            var start = Stopwatch.StartNew();
             string contract = string.IsNullOrEmpty(key) ? AttributedModelServices.GetContractName(serviceType) : key;
             var exports = container.GetExportedValues<object>(contract);
+
+            Debug.WriteLine("MefBootstrapper.GetInstance({0}): {1} ms", serviceType.Name, start.ElapsedMilliseconds);
 
             if (exports.Count() > 0)
                 return exports.First();
@@ -91,20 +89,20 @@ namespace Eagle
                             File.AppendAllText(
                                 LogFileName, "Looking for " + modelType + '\n');
 #endif
-                            if (modelType.Name == "RecentItemsFolderViewModel")
-                            {
-                                type = typeof(RecentItemsFolderView);
-                            }
+                            //if (modelType.Name == "RecentItemsFolderViewModel")
+                            //{
+                            //    type = typeof(RecentItemsFolderView);
+                            //}
 
-                            if (modelType.Name == "FileLocationViewModel")
-                            {
-                                type = typeof(FileLocationView);
-                            }
+                            //if (modelType.Name == "FileLocationViewModel")
+                            //{
+                            //    type = typeof(FileLocationView);
+                            //}
 
-                            if (modelType.Name == "FilePickerViewModel")
-                            {
-                                type = typeof(FilePickerView);
-                            }
+                            //if (modelType.Name == "FilePickerViewModel")
+                            //{
+                            //    type = typeof(FilePickerView);
+                            //}
                         }
                         return type;
                     };
