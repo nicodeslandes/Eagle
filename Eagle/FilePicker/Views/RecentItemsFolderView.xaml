@@ -6,8 +6,7 @@
              xmlns:vm="clr-namespace:Eagle.FilePicker.ViewModels"
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance vm:RecentItemsFolderViewModel, IsDesignTimeCreatable=true}"
-             d:Height="20" d:Width="74">
+             d:Height="20" d:Width="74" cal:Bind.AtDesignTime="True">
     <StackPanel>
         <TextBlock Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5,2" />
     </StackPanel>

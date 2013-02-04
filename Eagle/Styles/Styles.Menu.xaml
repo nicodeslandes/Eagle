@@ -4,7 +4,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    xmlns:cal="http://www.caliburnproject.org">
     <SolidColorBrush x:Key="ContextMenuBackground" Color="#FFFEFC" />
     <ControlTemplate TargetType="MenuItem" x:Key="SubMenuHeaderTemplate">
         <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}" Name="templateRoot" SnapsToDevicePixels="True">
@@ -228,7 +229,8 @@
     
     <Style TargetType="{x:Type MenuItem}" x:Key="DataBoundMenuItemStyle" BasedOn="{StaticResource {x:Type MenuItem}}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="Command" Value="{Binding Command}" />
+        <!--<Setter Property="Command" Value="{Binding Command}" />-->
+        <Setter Property="cal:Message.Attach" Value="InvokeAction" />
         <Setter Property="Control.HorizontalContentAlignment">
             <Setter.Value>
                 <Binding Path="HorizontalContentAlignment" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=ItemsControl, AncestorLevel=1}" />

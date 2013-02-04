@@ -12,6 +12,8 @@ using Caliburn.Micro;
 
 namespace Eagle.ViewModels
 {
+    using System.Windows;
+
     public class FileViewModel : PropertyChangedBase, IDisposable
     {
         private LineViewModel _currentUnfinishedLine;
@@ -48,6 +50,8 @@ namespace Eagle.ViewModels
             _encoding = encoding ?? Encoding.Default;
 
             this.Lines = new ObservableCollection<LineViewModel>();
+            BindingOperations.EnableCollectionSynchronization(this.Lines, this._linesSync); 
+            
             this.FileName = fileName;
             _syncContext = SynchronizationContext.Current;
             _readNewLinesTaskRunner = new SingleTaskRunner(ReadNewLinesFromFile);
@@ -111,12 +115,23 @@ namespace Eagle.ViewModels
             }
 
             // Setup File change watcher
-            _fileWatcher = new FileSystemWatcher(Path.GetDirectoryName(_fileName), Path.GetFileName(_fileName))
-                                    {
-                                        NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.Attributes
-                                    };
+            // Stop current instance
+            using (_fileWatcher) { }
+
+            // Start a new one
+            _fileWatcher =
+                new FileSystemWatcher(Path.GetDirectoryName(_fileName), Path.GetFileName(_fileName))
+                {
+                    NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.Attributes
+                };
             _fileWatcher.Changed += OnFileChanged;
+            _fileWatcher.Error += this.OnFileWatcherError;
             _fileWatcher.EnableRaisingEvents = true;
+        }
+
+        void OnFileWatcherError(object sender, ErrorEventArgs e)
+        {
+            MessageBox.Show("Error: " + e.GetException());
         }
 
         private void InitializeReadParameters()
@@ -231,8 +246,9 @@ namespace Eagle.ViewModels
             return newLine;
         }
 
-        async void OnFileChanged(object sender, FileSystemEventArgs e)
+        void OnFileChanged(object sender, FileSystemEventArgs e)
         {
+            var watcher = (FileSystemWatcher)sender;
             switch (e.ChangeType)
             {
                 case WatcherChangeTypes.Created:
@@ -240,9 +256,8 @@ namespace Eagle.ViewModels
                 case WatcherChangeTypes.Deleted:
                     break;
                 case WatcherChangeTypes.Changed:
-                    await Task.Delay(TimeSpan.FromMilliseconds(50));
-                    // Trigger a new read
-                    _readNewLinesTaskRunner.TriggerExecution();
+                    Task.Delay(TimeSpan.FromMilliseconds(50))
+                        .ContinueWith(_ => _readNewLinesTaskRunner.TriggerExecution());
                     break;
                 case WatcherChangeTypes.Renamed:
                     break;

@@ -96,6 +96,7 @@
     <Reference Include="System.Reactive.Windows.Threading">
       <HintPath>..\packages\Rx-Xaml.2.0.21103\lib\Net45\System.Reactive.Windows.Threading.dll</HintPath>
     </Reference>
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Caliburn.Micro.1.4\lib\net40\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -117,9 +118,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\ViewModels\PropertyChangedExtensions.cs" />
-    <Compile Include="FilePicker\ViewModels\DelegateCommand.cs" />
     <Compile Include="FilePicker\ViewModels\FilePickerItemBase.cs" />
     <Compile Include="Common\ViewModels\Property.cs" />
+    <Compile Include="FilePicker\ViewModels\FilePickerState.cs" />
     <Compile Include="FilePicker\ViewModels\FolderViewModel.cs" />
     <Compile Include="FilePicker\ViewModels\IObjectPropertiesProvider.cs" />
     <Compile Include="FilePicker\ViewModels\ObjectPropertiesProvider.cs" />
@@ -139,9 +140,16 @@
     </Compile>
     <Compile Include="IShell.cs" />
     <Compile Include="MefBootstrapper.cs" />
+    <Compile Include="Services\ClipboardService.cs" />
+    <Compile Include="Services\IClipboardService.cs" />
     <Compile Include="ViewModels\IFileManager.cs" />
     <Compile Include="ViewModels\IFileManagerEventSource.cs" />
     <Compile Include="ViewModels\FileManager.cs" />
+    <Compile Include="ViewModels\IStateCaptureContext.cs" />
+    <Compile Include="ViewModels\IStateService.cs" />
+    <Compile Include="ViewModels\StateService.cs" />
+    <Compile Include="ViewModels\ShellState.cs" />
+    <Compile Include="ViewModels\StateCaptureContext.cs" />
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>

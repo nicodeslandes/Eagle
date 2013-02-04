@@ -4,7 +4,7 @@ using System.Windows.Input;
 using Caliburn.Micro;
 using Eagle.Common.ViewModels;
 using System.ComponentModel.Composition;
-using System.Reactive.Linq;
+using System.Linq;
 using System;
 using System.Reactive.Disposables;
 using Eagle.ViewModels;
@@ -27,18 +27,38 @@ namespace Eagle.FilePicker.ViewModels
         /// Initializes a new instance of the FilePickerViewModel class.
         /// </summary>
         [ImportingConstructor]
-        public FilePickerViewModel(IObjectPropertiesProvider objectPropertyProvider, IFileManager fileManager, RecentItemsFolderViewModel recentItemsFolderViewModel)
+        public FilePickerViewModel(
+            IObjectPropertiesProvider objectPropertyProvider,
+            IFileManager fileManager,
+            RecentItemsFolderViewModel recentItemsFolderViewModel,
+            IStateService stateService)
         {
+            _stateService = stateService;
             _objectPropertyProvider = objectPropertyProvider;
             this.Items = new ObservableCollection<IFilePickerItem>();
-            this.AddLocationCommand = new DelegateCommand(this.AddLocation);
             this.ContextMenuItems = new ObservableCollection<MenuItemViewModel>
             {
-                new MenuItemViewModel("Add Folder", this.AddLocationCommand)
+                new MenuItemViewModel("Add Folder", this.AddLocation)
             };
 
             if (recentItemsFolderViewModel != null)
+            {
+                if (_stateService != null)
+                {
+                    FilePickerState state;
+                    if (_stateService.TryGetState("FilePicker", out state))
+                    {
+                        foreach (var item in state.RecentItems)
+                        {
+                            recentItemsFolderViewModel.ChildItems.Add(new FileLocationViewModel(item, fileManager));
+                        }
+                    }
+                }
                 this.Items.Add(recentItemsFolderViewModel);
+            }
+
+            if (_stateService != null)
+                _stateService.SavingEvent.Subscribe(SaveState);
 
             _disposables.Add(this
                 .ObserveProperty(v => v.SelectedItemProperties)
@@ -47,8 +67,21 @@ namespace Eagle.FilePicker.ViewModels
                 .Subscribe(count => this.ShowItemProperties = count > 0));
         }
 
+        private void SaveState(IStateCaptureContext context)
+        {
+            var recentItems = (RecentItemsFolderViewModel)this.Items[0];
+
+            context.SaveState("FilePicker",
+                new FilePickerState
+                {
+                    RecentItems =
+                        (from item in recentItems.ChildItems.OfType<FileLocationViewModel>()
+                         select item.Path).ToList()
+                });
+        }
+
         public FilePickerViewModel()
-            : this(null, null, null)
+            : this(null, null, null, null)
         {
             if (Execute.InDesignMode)
             {
@@ -66,7 +99,7 @@ namespace Eagle.FilePicker.ViewModels
                 };
             }
         }
-            
+
 
         public ObservableCollection<IFilePickerItem> Items { get; private set; }
 
@@ -75,6 +108,7 @@ namespace Eagle.FilePicker.ViewModels
         public ICommand AddLocationCommand { get; private set; }
 
         private IFilePickerItem _selectedItem;
+        private readonly IStateService _stateService;
 
         public IFilePickerItem SelectedItem
         {

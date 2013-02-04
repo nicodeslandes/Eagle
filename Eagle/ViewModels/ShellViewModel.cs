@@ -1,24 +1,15 @@
+using System;
+using System.Collections;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Text;
 using Caliburn.Micro;
 using Eagle.FilePicker.ViewModels;
+using Eagle.Services;
 using Microsoft.Win32;
-using System.ComponentModel.Composition;
-using System.Text;
-using System;
 
 namespace Eagle.ViewModels
 {
-    /// <summary>
-    /// This class contains properties that the main View can data bind to.
-    /// <para>
-    /// Use the <strong>mvvminpc</strong> snippet to add bindable properties to this ViewModel.
-    /// </para>
-    /// <para>
-    /// You can also use Blend to data bind with the tool's support.
-    /// </para>
-    /// <para>
-    /// See http://www.galasoft.ch/mvvm
-    /// </para>
-    /// </summary>
     [Export(typeof(IShell))]
     public class ShellViewModel : Screen, IShell
     {
@@ -27,21 +18,24 @@ namespace Eagle.ViewModels
         private bool _followTail;
         private bool _isFileOpen = false;
         private FileViewModel _file;
-
+        private readonly IStateService _stateService;
+        private readonly IClipboardService _clipboardService;
+        
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         [ImportingConstructor]
-        public ShellViewModel(IFileManagerEventSource fileManagerEventSource, IFileManager fileManager)
+        public ShellViewModel(
+            IFileManagerEventSource fileManagerEventSource,
+            IFileManager fileManager,
+            IStateService stateService,
+            IClipboardService clipboardService)
         {
-            fileManagerEventSource.OpenFileEventStream.Subscribe(this.OpenFile);
+            _clipboardService = clipboardService;
+            _stateService = stateService;
+            _stateService.SavingEvent.Subscribe(this.SaveState);
             _fileManager = fileManager;
-
-            this.OpenCommand = new DelegateCommand(this.Open);
-            this.ReloadCommand = new DelegateCommand(this.Reload, () => this.File != null);
-            this.RefreshFileCommand = new DelegateCommand(this.RefreshFile, () => this.File != null);
-            this.ClearCommand = new DelegateCommand(this.Clear, () => this.File != null);
-            this.CloseCommand = new DelegateCommand(this.Close, () => this.File != null);
+            fileManagerEventSource.OpenFileEventStream.Subscribe(this.OpenFile);
 
             this.DisplayName = "Eagle";
 
@@ -59,6 +53,34 @@ namespace Eagle.ViewModels
                 //this.FilePicker.Items.Add(new FileLocationViewModel("Logs"));
             }
         }
+
+        private void SaveState(IStateCaptureContext context)
+        {
+            context.SaveState("Shell",
+                new ShellState
+                {
+                    HasFile = _file != null,
+                    OpenFile = (_file == null) ? null : _file.FileName
+                });
+        }
+
+        public void CopySelectedLines(IEnumerable selection)
+        {
+            if (selection != null)
+            {
+                var lines = selection.Cast<LineViewModel>();
+                if (lines.Any())
+                {
+                    var str = new StringBuilder();
+                    foreach (var line in lines.OrderBy(l => l.LineNumber))
+                    {
+                        str.AppendLine(line.Text);
+                    }
+
+                    _clipboardService.CopyText(str.ToString());
+                }
+            }
+        }
         
         public bool IsFileOpen
         {
@@ -72,6 +94,12 @@ namespace Eagle.ViewModels
                 {
                     _isFileOpen = value;
                     this.NotifyOfPropertyChange(() => this.IsFileOpen);
+
+                    // Fire change notifications for depend properties
+                    this.NotifyOfPropertyChange(() => this.CanCloseFile);
+                    this.NotifyOfPropertyChange(() => this.CanRefreshFile);
+                    this.NotifyOfPropertyChange(() => this.CanReload);
+                    this.NotifyOfPropertyChange(() => this.CanClear);
                 }
             }
         }
@@ -95,15 +123,10 @@ namespace Eagle.ViewModels
         [Import]
         public FilePickerViewModel FilePicker { get; private set; }
 
-        public DelegateCommand OpenCommand { get; private set; }
-
-        public DelegateCommand CloseCommand { get; private set; }
-
-        public DelegateCommand RefreshFileCommand { get; private set; }
-
-        public DelegateCommand ReloadCommand { get; private set; }
-
-        public DelegateCommand ClearCommand { get; private set; }
+        public void SaveState()
+        {
+            _stateService.MarkAsDirty();
+        }
 
         public bool FollowTail
         {
@@ -146,7 +169,7 @@ namespace Eagle.ViewModels
             this.File.LoadFileContent();
         }
 
-        private void Open()
+        public void Open()
         {
             var dialog = new OpenFileDialog();
             if (dialog.ShowDialog() == true)
@@ -155,23 +178,28 @@ namespace Eagle.ViewModels
             }
         }
 
-        private void Close()
+        public void RefreshFile()
+        {
+            if (this.File != null)
+            {
+                this.File.RefreshFile();
+            }
+        }
+
+        public bool CanRefreshFile { get { return this.IsFileOpen; } }
+
+        public void CloseFile()
         {
             using (this.File)
             {
                 this.File = null;
+                this.IsFileOpen = false;
             }
         }
 
-        private void RefreshFile()
-        {
-            if (this.File != null)
-            {
-                this.File.Refresh();
-            }
-        }
+        public bool CanCloseFile { get { return this.IsFileOpen; } }
 
-        private void Reload()
+        public void Reload()
         {
             if (this.File != null)
             {
@@ -179,11 +207,27 @@ namespace Eagle.ViewModels
             }
         }
 
-        private void Clear()
+        public bool CanReload { get { return this.IsFileOpen; } }
+
+        public void Clear()
         {
             if (this.File != null)
             {
                 this.File.ClearContent();
+            }
+        }
+
+        public bool CanClear { get { return this.IsFileOpen; } }
+
+        public void RestoreState(ShellState state)
+        {
+            if (state.OpenFile != null)
+            {
+                _fileManager.OpenFile(state.OpenFile);
+            }
+            else
+            {
+                this.CloseFile();
             }
         }
     }

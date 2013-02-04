@@ -7,7 +7,7 @@
     <ProjectGuid>{29F412A3-1466-4045-A9BB-8F1AC668EAD5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Eagle.Common</RootNamespace>
+    <RootNamespace>Eagle</RootNamespace>
     <AssemblyName>Eagle.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -67,6 +67,8 @@
     <Compile Include="Behaviors\BindableSelectedItemBehavior.cs" />
     <Compile Include="Caliburn\Micro\Logging\DebugLogger.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="Interactivity\InputBindingTrigger.cs" />
+    <Compile Include="Interactivity\UiCommandTrigger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Threading\SingleTaskRunner.cs" />
   </ItemGroup>

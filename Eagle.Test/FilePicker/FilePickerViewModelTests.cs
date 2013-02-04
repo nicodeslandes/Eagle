@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Eagle.FilePicker.ViewModels;
 using Moq;
 using Eagle.ViewModels;
@@ -38,7 +37,7 @@ namespace Eagle.Test.FilePicker
 
         private FilePickerViewModel CreateViewModel()
         {
-            return new FilePickerViewModel(_objectPropertyProvider.Object, _fileManager.Object, null);
+            return new FilePickerViewModel(_objectPropertyProvider.Object, _fileManager.Object, null, null);
         }
     }
 }

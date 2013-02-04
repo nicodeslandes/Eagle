@@ -1,11 +1,13 @@
 ﻿using Caliburn.Micro;
 using Eagle.FilePicker.Views;
+using Eagle.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 
 namespace Eagle
 {
@@ -89,20 +91,20 @@ namespace Eagle
                             File.AppendAllText(
                                 LogFileName, "Looking for " + modelType + '\n');
 #endif
-                            //if (modelType.Name == "RecentItemsFolderViewModel")
-                            //{
-                            //    type = typeof(RecentItemsFolderView);
-                            //}
+                            if (modelType.Name == "RecentItemsFolderViewModel")
+                            {
+                                type = typeof(RecentItemsFolderView);
+                            }
 
-                            //if (modelType.Name == "FileLocationViewModel")
-                            //{
-                            //    type = typeof(FileLocationView);
-                            //}
+                            if (modelType.Name == "FileLocationViewModel")
+                            {
+                                type = typeof(FileLocationView);
+                            }
 
-                            //if (modelType.Name == "FilePickerViewModel")
-                            //{
-                            //    type = typeof(FilePickerView);
-                            //}
+                            if (modelType.Name == "FilePickerViewModel")
+                            {
+                                type = typeof(FilePickerView);
+                            }
                         }
                         return type;
                     };
@@ -126,6 +128,22 @@ namespace Eagle
                     LogFileName, "Error: intialising design-time bootstrapper:\n" + ex + '\n');
             }
 #endif
+        }
+
+        protected override void StartRuntime()
+        {
+            base.StartRuntime();
+
+            var stateService = (IStateService)this.GetInstance(typeof(IStateService), null);
+            stateService.InitializeAsync().Wait();
+        }
+
+        protected override void OnExit(object sender, EventArgs e)
+        {
+            var stateService = (IStateService)this.GetInstance(typeof(IStateService), null);
+            stateService.MarkAsDirty();
+
+            base.OnExit(sender, e);
         }
     }
 }

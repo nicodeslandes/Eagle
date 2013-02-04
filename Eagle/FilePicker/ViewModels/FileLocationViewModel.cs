@@ -29,24 +29,24 @@ namespace Eagle.FilePicker.ViewModels
             this.ContextMenuItems = new ObservableCollection<MenuItemViewModel>()
             {
                 new MenuItemViewModel("Add",
-                    new MenuItemViewModel("Add Child", new DelegateCommand(this.AddChild))),
+                    new MenuItemViewModel("Add Child", this.AddChild)),
                 new MenuItemViewModel("Edit Item",
-                    new MenuItemViewModel("Edit Item", new DelegateCommand(this.AddChild)),
-                    new MenuItemViewModel("Delete Item M W", new DelegateCommand(this.AddChild)),
+                    new MenuItemViewModel("Edit Item", this.AddChild),
+                    new MenuItemViewModel("Delete Item M W", this.AddChild),
                     new MenuItemViewModel("Sub Items", 
-                        new MenuItemViewModel("Test1", new DelegateCommand(this.AddChild)),
-                        new MenuItemViewModel("Test1", new DelegateCommand(this.AddChild)),
-                        new MenuItemViewModel("Test1", new DelegateCommand(this.AddChild)),
-                        new MenuItemViewModel("Test1", new DelegateCommand(this.AddChild)))),
-                new MenuItemViewModel("Delete Item M W", new DelegateCommand(this.AddChild)),
+                        new MenuItemViewModel("Test1", this.AddChild, () => false),
+                        new MenuItemViewModel("Test1", this.AddChild, () => false),
+                        new MenuItemViewModel("Test1", this.AddChild),
+                        new MenuItemViewModel("Test1", this.AddChild))),
+                new MenuItemViewModel("Delete Item M W", this.AddChild),
                 new MenuItemViewModel("Test1",
-                    new MenuItemViewModel("Edit Item", new DelegateCommand(this.AddChild)),
-                    new MenuItemViewModel("Delete Item M W", new DelegateCommand(this.AddChild)),
+                    new MenuItemViewModel("Edit Item", this.AddChild),
+                    new MenuItemViewModel("Delete Item M W", this.AddChild),
                     new MenuItemViewModel("Sub Items", 
-                        new MenuItemViewModel("Test1", new DelegateCommand(this.AddChild)),
-                        new MenuItemViewModel("Test1", new DelegateCommand(this.AddChild)),
-                        new MenuItemViewModel("Test1", new DelegateCommand(this.AddChild)),
-                        new MenuItemViewModel("Test1", new DelegateCommand(this.AddChild))))
+                        new MenuItemViewModel("Test1", this.AddChild),
+                        new MenuItemViewModel("Test1", this.AddChild),
+                        new MenuItemViewModel("Test1", this.AddChild),
+                        new MenuItemViewModel("Test1", this.AddChild)))
             };
         }
 
