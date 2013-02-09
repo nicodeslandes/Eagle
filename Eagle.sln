@@ -15,22 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{44668E
 	EndProjectSection
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://overlock.tfspreview.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Eagle\\Eagle.csproj
-		SccProjectName1 = Eagle
-		SccLocalPath1 = Eagle
-		SccProjectUniqueName2 = Eagle.Test\\Eagle.Test.csproj
-		SccProjectTopLevelParentUniqueName2 = Eagle.sln
-		SccProjectName2 = Eagle.Test
-		SccLocalPath2 = Eagle.Test
-		SccProjectUniqueName3 = Eagle.Common\\Eagle.Common.csproj
-		SccProjectName3 = Eagle.Common
-		SccLocalPath3 = Eagle.Common
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
