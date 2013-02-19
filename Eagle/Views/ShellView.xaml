@@ -7,8 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:cal="http://www.caliburnproject.org" mc:Ignorable="d"
     xmlns:ei="clr-namespace:Eagle.Interactivity;assembly=Eagle.Common"
+    xmlns:vm="clr-namespace:Eagle.ViewModels"
     x:Class="Eagle.Views.ShellView"
     Title="Eagle"
+    d:DataContext="{d:DesignInstance {x:Type vm:ShellViewModel}, IsDesignTimeCreatable=True}"
     Width="800" Height="800" cal:Bind.AtDesignTime="True">
 	<Window.Resources>
 		<Style x:Key="FocusVisual">

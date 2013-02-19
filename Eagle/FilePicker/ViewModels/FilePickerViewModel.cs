@@ -83,21 +83,18 @@ namespace Eagle.FilePicker.ViewModels
         public FilePickerViewModel()
             : this(null, null, null, null)
         {
-            if (Execute.InDesignMode)
-            {
-                this.Items.Add(new FolderViewModel("Documents") { ChildItems = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
-                this.Items.Add(new FolderViewModel("Projects"));
-                this.Items.Add(new FolderViewModel("Logs"));
+            this.Items.Add(new FolderViewModel("Documents") { ChildItems = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
+            this.Items.Add(new FolderViewModel("Projects"));
+            this.Items.Add(new FolderViewModel("Logs"));
 
-                this.SelectedItemProperties = new PropertyCollection
+            this.SelectedItemProperties = new PropertyCollection
+            {
+                Items =
                 {
-                    Items =
-                    {
-                        new PropertyValue<string>("Name", "File Picker Item"),
-                        new PropertyValue<int>("Size", 1235)
-                    }
-                };
-            }
+                    new PropertyValue<string>("Name", "File Picker Item"),
+                    new PropertyValue<int>("Size", 1235)
+                }
+            };
         }
 
 

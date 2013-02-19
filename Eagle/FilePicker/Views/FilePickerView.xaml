@@ -11,8 +11,7 @@
              x:Class="Eagle.FilePicker.Views.FilePickerView"
              mc:Ignorable="d"
              d:DesignHeight="590.279" d:DesignWidth="245.844"
-             d:DataContext="{d:DesignInstance {x:Type vm:FilePickerViewModel}, IsDesignTimeCreatable=True}"
-             cal:Bind.AtDesignTime="True">
+             d:DataContext="{d:DesignInstance {x:Type vm:FilePickerViewModel}, IsDesignTimeCreatable=True}" cal:Bind.AtDesignTime="True">
     <UserControl.ContextMenu>
         <ContextMenu Style="{StaticResource DataBoundContextMenuStyle}" />
     </UserControl.ContextMenu>

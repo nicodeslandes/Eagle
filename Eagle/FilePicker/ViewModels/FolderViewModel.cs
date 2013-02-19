@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-using System;
 using Caliburn.Micro;
 
 namespace Eagle.FilePicker.ViewModels

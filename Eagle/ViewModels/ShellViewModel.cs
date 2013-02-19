@@ -54,6 +54,19 @@ namespace Eagle.ViewModels
             }
         }
 
+        public ShellViewModel()
+        {
+            this.DisplayName = "Eagle";
+
+            this.FollowTail = true;
+            this.IsFileOpen = true;
+            this.File = new FileViewModel("Test File");
+            this.FilePicker = new FilePickerViewModel();
+            this.FilePicker.Items.Add(new FileLocationViewModel("Documents") { SubLocations = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
+            this.FilePicker.Items.Add(new FileLocationViewModel("Projects"));
+            this.FilePicker.Items.Add(new FileLocationViewModel("Logs"));
+        }
+
         private void SaveState(IStateCaptureContext context)
         {
             context.SaveState("Shell",
