@@ -26,14 +26,14 @@ namespace Eagle.ViewModels
         /// </summary>
         public ShellViewModel()
         {
-            this.OpenCommand = new DelegateCommand(this.Open);
-            this.ReloadCommand = new DelegateCommand(this.Reload, () => this.File != null);
-            this.RefreshFileCommand = new DelegateCommand(this.RefreshFile, () => this.File != null);
-            this.ClearCommand = new DelegateCommand(this.Clear, () => this.File != null);
-            this.CloseCommand = new DelegateCommand(this.Close, () => this.File != null);
+            OpenCommand = new DelegateCommand(this.Open);
+            ReloadCommand = new DelegateCommand(this.Reload, () => this.File != null);
+            RefreshFileCommand = new DelegateCommand(this.RefreshFile, () => this.File != null);
+            ClearCommand = new DelegateCommand(this.Clear, () => this.File != null);
+            CloseCommand = new DelegateCommand(this.Close, () => this.File != null);
 
-            this.FilePicker = new FilePickerViewModel();
-            this.DisplayName = "Eagle";
+            FilePicker = new FilePickerViewModel();
+            DisplayName = "Eagle";
 
             this.FollowTail = true;
 
