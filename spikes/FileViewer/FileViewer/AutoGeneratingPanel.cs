@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace FileViewer
 {
-    public class AutogeneratingPanel : Panel
+    public class AutoGeneratingPanel : Panel
     {
         protected override Size MeasureOverride(Size availableSize)
         {
@@ -38,9 +38,16 @@ namespace FileViewer
                 {
                     var remainingVerticalSpace = finalSize.Height - position.Y;
                     var newChild = ItemGenerator();
+                    if (newChild == null)
+                    {
+                        break;
+                    }
+
+                    Children.Add(newChild);
                     newChild.Measure(new Size(finalSize.Width, remainingVerticalSpace));
                     var childHeight = Math.Min(newChild.DesiredSize.Height, remainingVerticalSpace);
                     newChild.Arrange(new Rect(position, new Size(finalSize.Width, childHeight)));
+                    position.Y += childHeight;
                 }
             }
 
@@ -48,15 +55,5 @@ namespace FileViewer
         }
 
         public Func<UIElement> ItemGenerator { get; set; }
-
-        protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
-        {
-            base.OnVisualChildrenChanged(visualAdded, visualRemoved);
-        }
-
-        protected override void OnRender(DrawingContext dc)
-        {
-            base.OnRender(dc);
-        }
     }
 }

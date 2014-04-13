@@ -53,7 +53,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AutogeneratingPanel.cs" />
+    <Compile Include="AutoGeneratingPanel.cs" />
     <Compile Include="ILineProvider.cs" />
     <Compile Include="LineProvider.cs" />
     <Compile Include="VisualPresenter.cs" />
@@ -65,7 +65,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="FileContentVisual.cs" />
+    <Compile Include="LineElement.cs" />
     <Compile Include="FileView.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

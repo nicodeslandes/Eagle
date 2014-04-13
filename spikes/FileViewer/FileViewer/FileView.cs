@@ -44,7 +44,7 @@ namespace FileViewer
     /// </summary>
     public class FileView : Control
     {
-        private Panel _linesPanel;
+        private AutoGeneratingPanel _linesPanel;
         private int _lineCount;
 
         static FileView()
@@ -55,7 +55,16 @@ namespace FileViewer
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            _linesPanel = GetTemplateChild("LinesContainer") as Panel;
+            var lineProvider = new MockLineProvider();
+            _linesPanel = GetTemplateChild("LinesContainer") as AutoGeneratingPanel;
+            if (_linesPanel != null)
+            {
+                _linesPanel.ItemGenerator = () =>
+                {
+                    var nextLine = lineProvider.GetNextLine();
+                    return nextLine != null ? new LineElement { Text = nextLine } : null;
+                };
+            }
         }
         
         public void AddText(string text)
@@ -69,12 +78,11 @@ namespace FileViewer
             {
                 _linesPanel.Children.Add(new LineElement { Text = text });
             }
-
-            _lineCount = _linesPanel.Children.Count;
         }
 
         public void Random()
         {
+            _lineCount = _linesPanel.Children.Count;
             var rd = new Random();
             var bytes = new byte[150];
             var syncContext = SynchronizationContext.Current;
