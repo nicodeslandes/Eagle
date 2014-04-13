@@ -1,0 +1,7 @@
+*.ncrunchsolution.user
+*.suo
+*.psess
+*.vspx
+bin/
+obj/
+/_NCrunch_Eagle

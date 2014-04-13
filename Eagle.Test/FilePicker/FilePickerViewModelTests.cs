@@ -23,7 +23,7 @@ namespace Eagle.Test.FilePicker
         {
             var vm = CreateViewModel();
             Assert.IsNotNull(vm.Items);
-            Assert.AreEqual(1, vm.Items.Count);
+            Assert.AreEqual(0, vm.Items.Count);
         }
 
         [Test]

@@ -1,0 +1,20 @@
+﻿<Window x:Class="FileViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fileViewer="clr-namespace:FileViewer"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Label>Visuals:</Label>
+        <StackPanel Grid.Row="0" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button Margin="5" Content="Add Text" Name="AddTextButton" Padding="5,2" Click="AddTextButton_Click"/>
+            <Button Margin="5" Content="Random" Name="RandomButton" Padding="5,2" Click="RandomButton_Click" />
+        </StackPanel>
+        <Border BorderBrush="DarkGoldenrod" BorderThickness="1" Grid.Row="1"  Padding="20" Margin="10">
+            <fileViewer:FileView x:Name="FileViewControl" />
+        </Border>
+    </Grid>
+</Window>
