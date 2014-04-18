@@ -126,6 +126,8 @@
                 </LinearGradientBrush>
             </DockPanel.Background>
             <Label Content="Current File: " />
+            <TextBox Text="{Binding File.Filter.FilterExpression, UpdateSourceTrigger=PropertyChanged}" DockPanel.Dock="Right" MinWidth="200" Margin="5,2" />
+            <Label Content="Filter:" DockPanel.Dock="Right"/>
             <TextBox Text="{Binding File.FileName}" VerticalAlignment="Center" IsReadOnly="True" Background="Transparent" BorderThickness="0"/>
         </DockPanel>
         <ContentControl Grid.Row="2" x:Name="FilePicker" />

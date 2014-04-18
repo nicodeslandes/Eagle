@@ -50,9 +50,10 @@ namespace Eagle.ViewModels
             _encoding = encoding ?? Encoding.Default;
 
             this.Lines = new ObservableCollection<LineViewModel>();
-            BindingOperations.EnableCollectionSynchronization(this.Lines, this._linesSync); 
-            
+            BindingOperations.EnableCollectionSynchronization(this.Lines, this._linesSync);
+
             this.FileName = fileName;
+            this.Filter = new Filter();
             _syncContext = SynchronizationContext.Current;
             _readNewLinesTaskRunner = new SingleTaskRunner(ReadNewLinesFromFile);
 
@@ -71,6 +72,8 @@ namespace Eagle.ViewModels
 
             }
         }
+
+        public Filter Filter { get; private set; }
 
         public string FileName
         {
@@ -193,7 +196,7 @@ namespace Eagle.ViewModels
                         {
                             var lastLineCharacter = (i > 0) ? buffer[i - 1] : _previousReadLastByte;
                             LineViewModel newLine = ReadNewLine(lastLineCharacter, false);
-                            if (newLine != null)
+                            if (Filter.FilterLine(newLine) != null)
                                 yield return newLine;
                         }
 

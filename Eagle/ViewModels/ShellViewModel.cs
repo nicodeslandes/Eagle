@@ -20,7 +20,7 @@ namespace Eagle.ViewModels
         private FileViewModel _file;
         private readonly IStateService _stateService;
         private readonly IClipboardService _clipboardService;
-        
+
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
@@ -60,7 +60,7 @@ namespace Eagle.ViewModels
 
             this.FollowTail = true;
             this.IsFileOpen = true;
-            this.File = new FileViewModel("Test File");
+            this.File = new FileViewModel("Test File", null);
             this.FilePicker = new FilePickerViewModel();
             this.FilePicker.Items.Add(new FileLocationViewModel("Documents") { SubLocations = { new FileLocationViewModel("File1"), new FileLocationViewModel("File2"), new FileLocationViewModel("File3") } });
             this.FilePicker.Items.Add(new FileLocationViewModel("Projects"));
